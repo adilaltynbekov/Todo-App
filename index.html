@@ -16,14 +16,63 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <header></header>
+    <header class="header">
+      <!-- Header container -->
+      <div class="header__wrapper">
+        <h1 class="header__heading">TODO</h1>
+        <!-- Switch theme button -->
+        <button
+          class="header__theme-switch-btn"
+          type="button"
+          aria-label="Switch theme dark/light"
+        ></button>
+      </div>
+    </header>
 
-    <main></main>
+    <main>
+      <div class="app__wrapper">
+        <!--Todo input container -->
+        <form
+          id="app__todo-form"
+          class="app__todo-form"
+          aria-label="Create a new todo"
+          type="submit"
+        >
+          <input
+            id="app__todo-input"
+            class="app__todo-input"
+            aria-label="Create a new todo"
+            type="text"
+            placeholder="Create a new todo..."
+          />
+        </form>
 
-    <footer class="attribution">
-      Challenge by
-      <a href="https://www.frontendmentor.io?ref=challenge">Frontend Mentor</a>.
-      Coded by <a href="https://github.com/adilaltynbekov">Justice Goldman</a>.
+        <!-- Todo stack container -->
+        <div class="app__todo-stack-wrapper">
+          <!-- Stack list -->
+          <ul class="app__todo-list">
+            <li class="app__todo-item">Never quit!</li>
+          </ul>
+          <!-- Todo stack info -->
+          <div class="app__todo-controls">
+            <span class="app__items-left">0 items left</span>
+            <div class="app__filters">
+              <button class="app__filter-btn active-filter" type="button">
+                All
+              </button>
+              <button class="app__filter-btn" type="button">Active</button>
+              <button class="app__filter-btn" type="button">Completed</button>
+            </div>
+            <button class="app__clear-completed-btn" type="button">
+              Clear Completed
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <span class="footer__reminder">Drag and drop to reorder list</span>
     </footer>
   </body>
 </html>
