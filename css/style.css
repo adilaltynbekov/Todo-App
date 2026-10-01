@@ -1,0 +1,108 @@
+:root {
+  /* ## Colors */
+
+  /* ### Primary */
+  --Blue-500: hsl(220, 98%, 61%);
+  /* - Check Background: linear-gradient hsl(192, 100%, 67%) to hsl(280, 87%, 65%) */
+
+  /* ### Neutral */
+
+  /* ### Light Theme */
+  --Gray-50: hsl(0, 0%, 98%);
+  --Purple-300: hsl(234, 39%, 85%);
+  --Gray-300: hsl(233, 11%, 84%);
+  --Gray-600: hsl(236, 9%, 61%);
+  --Navy-850: hsl(235, 19%, 35%);
+
+  /* ### Dark Theme */
+  --Navy-950: hsl(235, 21%, 11%);
+  --Navy-900: hsl(235, 24%, 19%);
+  --Purple-300: hsl(234, 39%, 85%);
+  /* (hover) */
+  --Purple-100: : hsl(236, 33%, 92%);
+  --Purple-600: hsl(235, 16%, 43%);
+  --Purple-700: hsl(233, 14%, 35%);
+  --Purple-800: hsl(237, 14%, 26%);
+  --Gray-600: hsl(236, 9%, 61%);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container-center {
+  max-width: 33.75rem;
+  margin: 0 auto;
+}
+
+body {
+  position: relative;
+  background-color: var(--Navy-950);
+  font-family: "Josefin Sans", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Image background */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 18.75rem;
+  background-image: url("../images/bg-desktop-dark.jpg");
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+}
+
+/* HEADER */
+.header__wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header__heading {
+  color: var(--Gray-50);
+  font-weight: 700;
+  letter-spacing: 0.5rem;
+  transform: translateY(4px);
+}
+
+.header__theme-switch-btn {
+}
+
+.header__btn-icon {
+}
+/* MAIN */
+.app__wrapper {
+}
+
+.app__todo-form {
+}
+
+.app__todo-input {
+  width: 100%;
+}
+
+.app__todo-stack-wrapper {
+  background-color: var(--Navy-900);
+}
+
+.app__todo-list {
+  list-style: none;
+  color: var(--Gray-300);
+}
+
+.app__todo-controls {
+  display: flex;
+  justify-content: space-between;
+}

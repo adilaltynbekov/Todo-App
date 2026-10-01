@@ -14,23 +14,37 @@
     <title>Frontend Mentor | Todo app</title>
 
     <link rel="stylesheet" href="css/style.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header class="header">
       <!-- Header container -->
-      <div class="header__wrapper">
+      <div class="header__wrapper container-center">
         <h1 class="header__heading">TODO</h1>
+
         <!-- Switch theme button -->
         <button
           class="header__theme-switch-btn"
           type="button"
           aria-label="Switch theme dark/light"
-        ></button>
+        >
+          <img
+            class="header__btn-icon"
+            src="images/icon-sun.svg"
+            alt="light theme (sun)"
+          />
+        </button>
       </div>
     </header>
 
     <main>
-      <div class="app__wrapper">
+      <div class="app__wrapper container-center">
         <!--Todo input container -->
         <form
           id="app__todo-form"
@@ -51,8 +65,12 @@
         <div class="app__todo-stack-wrapper">
           <!-- Stack list -->
           <ul class="app__todo-list">
-            <li class="app__todo-item">Never quit!</li>
+            <li class="app__todo-item">
+              <img class="app__item-icon" src="images/icon-check.svg" />
+              <span class="app__item-deed">Never quit!</span>
+            </li>
           </ul>
+
           <!-- Todo stack info -->
           <div class="app__todo-controls">
             <span class="app__items-left">0 items left</span>
@@ -72,7 +90,9 @@
     </main>
 
     <footer class="footer">
-      <span class="footer__reminder">Drag and drop to reorder list</span>
+      <div class="footer__wrapper container-center">
+        <span class="footer__reminder">Drag and drop to reorder list</span>
+      </div>
     </footer>
   </body>
 </html>
