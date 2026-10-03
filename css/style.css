@@ -1,33 +1,42 @@
 :root {
-  /* ## Colors */
-
-  /* ### Primary */
-  --Blue-500: hsl(220, 98%, 61%);
-
-  /* Check Background: linear-gradient to right */
-  --Cyan: hsl(192, 100%, 67%);
-  --Pink: hsl(280, 87%, 65%);
+  --clr-accent: hsl(220, 98%, 61%);
+  --grad-check: linear-gradient(
+    135deg,
+    hsl(192, 100%, 67%),
+    hsl(280, 87%, 65%)
+  );
 
   /* ### Neutral */
-
-  /* ### Light Theme */
   --Gray-50: hsl(0, 0%, 98%);
-  --Purple-300: hsl(234, 39%, 85%);
-  --Gray-300: hsl(233, 11%, 84%);
+  /* (hover) */
   --Gray-600: hsl(236, 9%, 61%);
-  --Navy-850: hsl(235, 19%, 35%);
+  --border-item: hsl(237, 14%, 26%);
 
   /* ### Dark Theme */
-  --Navy-950: hsl(235, 21%, 11%);
-  --Navy-900: hsl(235, 24%, 19%);
-  --Purple-300: hsl(234, 39%, 85%);
-  /* (hover) */
-  --Purple-100: hsl(236, 33%, 92%);
+  --bg-main: hsl(235, 21%, 11%);
+  --bg-app: hsl(235, 24%, 19%);
+  --text-main: hsl(234, 39%, 85%);
 
-  --Purple-600: hsl(235, 16%, 43%);
-  --Purple-700: hsl(233, 14%, 35%);
-  --Purple-800: hsl(237, 14%, 26%);
-  --Gray-600: hsl(236, 9%, 61%);
+  --text-secondary: hsl(235, 16%, 43%);
+  --text-tertiary: hsl(233, 14%, 35%);
+
+  /* Shadow */
+  --shadow-input: 0 35px 30px rgba(0, 0, 0, 0.4);
+  --shadow-stack: 0 40px 50px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] {
+  /* ### Light Theme */
+  --bg-main: hsl(0, 0%, 98%);
+  --bg-app: hsl(0, 0%, 100%);
+  --text-main: hsl(235, 19%, 35%);
+  --text-secondary: hsl(236, 9%, 61%);
+  --text-tertiary: hsl(233, 11%, 84%);
+  --border-item: hsl(236, 33%, 92%);
+
+  /* Shadow */
+  --shadow-input: 0 35px 30px rgba(0, 0, 0, 0.1);
+  --shadow-stack: 0 40px 50px rgba(0, 0, 0, 0.1);
 }
 
 *,
@@ -45,31 +54,53 @@
 
 body {
   position: relative;
-  background-color: var(--Navy-950);
+  background-color: var(--bg-main);
   font-family: "Josefin Sans", sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
-
-/* Image background */
-body::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 18.75rem;
-  background-image: url("../images/bg-desktop-dark.jpg");
-  background-size: cover;
-  background-position: center;
-  z-index: -1;
 }
 
 /* HEADER */
 .header {
-  padding-bottom: 2.5rem;
+  position: relative;
+  min-height: 18.75rem;
+  padding-top: 4.5rem;
+}
+
+.header::before,
+.header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  transition: opacity 0.3s ease;
+  /* z-index: 0; */
+}
+
+.header::before {
+  background-image: url("../images/bg-desktop-light.jpg");
+  opacity: 0;
+}
+
+.header::after {
+  background-image: url("../images/bg-desktop-dark.jpg");
+  opacity: 1;
+}
+
+[data-theme="light"] .header::before {
+  opacity: 1;
+}
+
+[data-theme="light"] .header::after {
+  opacity: 0;
+}
+
+.header__wrapper {
+  position: relative;
+  z-index: 1;
 }
 
 .header__wrapper {
@@ -81,19 +112,54 @@ body::before {
 .header__heading {
   color: var(--Gray-50);
   font-weight: 700;
-  letter-spacing: 0.5rem;
+  letter-spacing: 1rem;
   transform: translateY(4px);
+  font-size: 3rem;
 }
 
 .header__theme-switch-btn {
   background-color: transparent;
   border: none;
+  cursor: pointer;
+
+  display: grid;
+  place-items: center;
 }
 
 .header__btn-icon {
+  grid-area: 1 / 1;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.header__btn-icon--sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.header__btn-icon--moon {
+  opacity: 0;
+  transform: rotate(360deg) scale(0.5);
+}
+
+[data-theme="light"] .header__btn-icon--sun {
+  opacity: 0;
+  transform: rotate(-360deg) scale(0.5);
+}
+
+[data-theme="light"] .header__btn-icon--moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
 }
 
 /* MAIN */
+main {
+  margin-top: -3.25rem;
+  position: relative;
+  z-index: 2;
+}
+
 .app__wrapper {
 }
 
@@ -104,8 +170,8 @@ body::before {
   margin-bottom: 1.25rem;
   padding: 1.25rem;
   border-radius: 4px;
-  background-color: var(--Navy-900);
-  box-shadow: 0 35px 30px rgba(0, 0, 0, 0.4);
+  background-color: var(--bg-app);
+  box-shadow: var(--shadow-input);
 }
 
 .app__todo-form .todo__checkbox-custom {
@@ -119,36 +185,40 @@ body::before {
   outline: none;
   font-family: inherit;
   font-size: 1.125rem;
-  color: var(--Purple-300);
+  color: var(--text-main);
 }
 
 .app__todo-input::placeholder {
-  color: var(--Purple-600);
+  color: var(--text-secondary);
   font-size: 1.125rem;
 }
 
 .app__todo-stack-wrapper {
-  background-color: var(--Navy-900);
+  background-color: var(--bg-app);
   border-radius: 4px;
-  box-shadow: 0 40px 50px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-stack);
 }
 
 .app__todo-list {
   list-style: none;
-  color: var(--Purple-300);
+  color: var(--text-main);
   font-size: 1.125rem;
 }
 
 .app__todo {
   padding: 1.25rem;
-  border-bottom: 1px solid var(--Purple-800);
-}
-
-.todo__checkbox-label {
+  border-bottom: 1px solid var(--border-item);
   display: flex;
   align-items: center;
   gap: 1.25rem;
+}
+
+.todo__checkbox-label {
   cursor: pointer;
+}
+
+.todo__checkbox-label:hover .todo__checkbox-custom::after {
+  opacity: 1;
 }
 
 .todo__checkbox-input {
@@ -162,19 +232,41 @@ body::before {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid var(--Purple-800);
+  border: 1px solid var(--border-item);
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.todo__checkbox-custom::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--bg-app), var(--bg-app)) padding-box,
+    var(--grad-check) border-box;
+
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
 .todo__check-icon {
   display: none;
+  z-index: 1;
 }
 
 .todo__checkbox-input:checked + .todo__checkbox-custom {
-  background: linear-gradient(to right, var(--Cyan), var(--Pink));
-  border: none;
+  background: var(--grad-check);
+  background-origin: border-box;
+  background-clip: border-box;
+  border-color: transparent;
+}
+
+.todo__checkbox-input:checked + .todo__checkbox-custom::after {
+  opacity: 0;
 }
 
 .todo__checkbox-input:checked + .todo__checkbox-custom .todo__check-icon {
@@ -186,7 +278,7 @@ body::before {
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem;
-  color: var(--Purple-700);
+  color: var(--text-secondary);
   font-size: 1rem;
 }
 
@@ -199,7 +291,7 @@ body::before {
 .app__clear-completed-btn {
   background-color: transparent;
   border: none;
-  color: var(--Purple-700);
+  color: var(--text-secondary);
   font-size: 1rem;
   font-family: inherit;
 }
@@ -209,12 +301,24 @@ body::before {
 }
 
 .active-filter {
-  color: var(--Blue-500);
+  color: var(--clr-accent);
 }
 
 /* FOOTER */
 .footer__wrapper {
   text-align: center;
-  padding-top: 2.5rem;
-  color: var(--Purple-700);
+  padding-top: 3.5rem;
+  color: var(--text-secondary);
+}
+
+body,
+.app__todo-input,
+.footer__wrapper,
+.app__todo-controls,
+.app__filter-btn,
+.app__clear-completed-btn {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
 }
