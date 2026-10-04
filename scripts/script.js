@@ -10,9 +10,4 @@ themeSwitchBtn.addEventListener("click", function () {
     "data-theme",
     isLight ? "dark" : "light",
   );
-
-  // Update the icon based on the current theme
-  themeBtnIcon.src = isLight
-    ? "../images/icon-sun.svg"
-    : "../images/icon-moon.svg";
 });
