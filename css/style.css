@@ -41,7 +41,7 @@
   --shadow-stack: 0 40px 50px rgba(0, 0, 0, 0.1);
 
   /* Hover */
-  --clr-hover: hsl(235, 19%, 35%)
+  --clr-hover: hsl(235, 19%, 35%);
 }
 
 /* Gloval reset */
@@ -216,13 +216,18 @@ main {
 .app__todo {
   padding: 1.25rem;
   border-bottom: 1px solid var(--border-item);
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
+}
+
+.app__task-message {
+  transform: translateY(2px);
 }
 
 .todo__checkbox-label {
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
 }
 
 .todo__checkbox-label:hover .todo__checkbox-custom::after {
@@ -245,8 +250,11 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  transition: border-color 0.2s ease;
 }
 
+/* Layer 1: Hover Gradient Border Ring (Center stays clear) */
 .todo__checkbox-custom::after {
   content: "";
   position: absolute;
@@ -261,23 +269,67 @@ main {
   transition: opacity 0.2s ease;
 }
 
+/* Layer 2: Checked Full Gradient Fill (Center IS gradient) */
+.todo__checkbox-custom::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  background: var(--grad-check);
+
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Hover: Reveal gradient border ring */
+.todo__checkbox-input:checked + .todo__checkbox-custom::after {
+  opacity: 1;
+}
+
+/* Checked: Reveal full solid gradient circle */
+.todo__checkbox-input:checked + .todo__checkbox-custom::before {
+  opacity: 1;
+}
+
+/* Checked: Hide hover border layer to avoid overlap */
+.todo__checkbox-input:checked + .todo__checkbox-custom::after {
+  opacity: 0;
+}
+
+/* Checked: Hide default base border */
+.todo__checkbox-input:checked + .todo__checkbox-custom {
+  border-color: transparent;
+}
+
+/* Checkmark SVG icon */
 .todo__check-icon {
   display: none;
   z-index: 1;
 }
 
-.todo__checkbox-input:checked + .todo__checkbox-custom {
-  background: var(--grad-check);
-  background-origin: border-box;
-  border-color: transparent;
-}
-
-.todo__checkbox-input:checked + .todo__checkbox-custom::after {
-  opacity: 0;
-}
-
 .todo__checkbox-input:checked + .todo__checkbox-custom .todo__check-icon {
   display: block;
+}
+
+.app__delete-task-btn {
+  background-color: transparent;
+  border: none;
+  margin-left: auto;
+  align-items: center;
+  display: flex;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.todo__checkbox-label:hover .app__delete-task-btn {
+  /* display: flex; */
+  opacity: 1;
+}
+
+.app__cross-icon {
+  max-width: 100%;
+  height: auto;
 }
 
 .app__todo-controls {
