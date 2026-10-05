@@ -8,7 +8,6 @@
 
   /* ### Neutral */
   --Gray-50: hsl(0, 0%, 98%);
-  /* (hover) */
   --Gray-600: hsl(236, 9%, 61%);
   --border-item: hsl(237, 14%, 26%);
 
@@ -23,6 +22,9 @@
   /* Shadow */
   --shadow-input: 0 35px 30px rgba(0, 0, 0, 0.4);
   --shadow-stack: 0 40px 50px rgba(0, 0, 0, 0.4);
+
+  /* Hover */
+  --clr-hover: hsl(236, 33%, 92%);
 }
 
 [data-theme="light"] {
@@ -37,6 +39,9 @@
   /* Shadow */
   --shadow-input: 0 35px 30px rgba(0, 0, 0, 0.1);
   --shadow-stack: 0 40px 50px rgba(0, 0, 0, 0.1);
+
+  /* Hover */
+  --clr-hover: hsl(235, 19%, 35%)
 }
 
 /* Gloval reset */
@@ -52,6 +57,18 @@
 .container-center {
   max-width: 40rem;
   margin: 0 auto;
+}
+
+body,
+.app__todo-input,
+.footer__wrapper,
+.app__todo-controls,
+.app__filter-btn,
+.app__clear-completed-btn {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 body {
@@ -284,6 +301,7 @@ main {
   color: var(--text-secondary);
   font-size: 1rem;
   font-family: inherit;
+  cursor: pointer;
 }
 
 .app__filter-btn {
@@ -294,21 +312,14 @@ main {
   color: var(--clr-accent);
 }
 
+.app__filter-btn:not(.active-filter):hover,
+.app__clear-completed-btn:hover {
+  color: var(--clr-hover);
+}
+
 /* FOOTER */
 .footer__wrapper {
   text-align: center;
   padding-top: 3.5rem;
   color: var(--text-secondary);
-}
-
-body,
-.app__todo-input,
-.footer__wrapper,
-.app__todo-controls,
-.app__filter-btn,
-.app__clear-completed-btn {
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease;
 }
