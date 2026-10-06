@@ -195,6 +195,8 @@ main {
   font-family: inherit;
   font-size: 1.125rem;
   color: var(--text-main);
+
+  caret-color: var(--clr-accent);
 }
 
 .app__todo-input::placeholder {
