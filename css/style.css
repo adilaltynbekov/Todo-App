@@ -219,14 +219,42 @@ main {
 .app__todo {
   padding: 1.25rem;
   border-bottom: 1px solid var(--border-item);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+/* Checked gradient background on custom checkbox */
+.todo-completed .todo__checkbox-custom::before {
+  opacity: 1;
+}
+
+.todo-completed .todo__checkbox-custom::after {
+  opacity: 0;
+}
+
+.todo-completed .todo__checkbox-custom {
+  border-color: transparent;
+}
+
+.todo-completed .todo__check-icon {
+  opacity: 1;
+}
+
+.todo-completed .todo__task {
+  color: var(--text-muted);
+}
+
+.todo-completed .todo__task::after {
+  transform: scaleX(1);
 }
 
 .todo__label {
   cursor: pointer;
-  display: flex;
+  /* display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.25rem;
+  gap: 1.25rem; */
 }
 
 .todo__input {
@@ -240,12 +268,11 @@ main {
 /* Bottom layer */
 .todo__checkbox-custom {
   position: relative;
-  
+
   width: 24px;
   height: 24px;
   border-radius: 50%;
   border: 1px solid var(--border-item);
-
 
   display: flex;
   align-items: center;
@@ -283,7 +310,7 @@ main {
 }
 
 /* Hover: Reveal gradient border ring */
-.todo__label:hover .todo__checkbox-custom::after {
+.app__todo:not(.todo-completed):not(:has(.todo__input:checked)):hover .todo__checkbox-custom::after {
   opacity: 1;
 }
 
@@ -316,7 +343,6 @@ main {
 }
 
 .todo__task {
-  transform: translateY(2px);
   position: relative;
   transition: color 0.2s ease;
 }
@@ -335,27 +361,29 @@ main {
   transition: transform 0.3s ease;
 }
 
-.todo__input:checked ~ .todo__task {
+.app__todo:has(.todo__input:checked) .todo__task {
   color: var(--text-muted);
 }
 
-.todo__input:checked ~ .todo__task::after {
+.app__todo:has(.todo__input:checked) .todo__task::after {
   transform: scaleX(1);
 }
 
 .todo__btn--remove {
   background-color: transparent;
   border: none;
-  margin-left: auto;
   align-items: center;
   display: flex;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
+  margin-left: auto;
 }
 
-.todo__label:hover .todo__btn--remove {
+.app__todo:hover .todo__btn--remove {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .todo__icon--cross {
@@ -378,10 +406,6 @@ main {
   gap: 1.25rem;
 }
 
-.active-filter {
-  color: var(--clr-accent);
-}
-
 .app__filter-btn,
 .app__clear-completed-btn {
   background-color: transparent;
@@ -390,6 +414,10 @@ main {
   font-size: 1rem;
   font-family: inherit;
   cursor: pointer;
+}
+
+.active-filter {
+  color: var(--clr-accent);
 }
 
 .app__filter-btn {
