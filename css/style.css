@@ -203,6 +203,7 @@ main {
   color: var(--text-secondary);
 }
 
+/* TODO */
 .app__todo-stack-wrapper {
   background-color: var(--bg-app);
   border-radius: 4px;
@@ -220,35 +221,7 @@ main {
   border-bottom: 1px solid var(--border-item);
 }
 
-.app__task-message {
-  transform: translateY(2px);
-  position: relative;
-  transition: color 0.2s ease;
-}
-
-.app__task-message::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 100%;
-  height: 2px;
-  background-color: var(--text-muted);
-
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
-}
-
-.todo__checkbox-input:checked ~ .app__task-message {
-  color: var(--text-muted);
-}
-
-.todo__checkbox-input:checked ~ .app__task-message::after {
-  transform: scaleX(1);
-}
-
-.todo__checkbox-label {
+.todo__label {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -256,31 +229,33 @@ main {
   gap: 1.25rem;
 }
 
-.todo__checkbox-label:hover .todo__checkbox-custom::after {
-  opacity: 1;
-}
-
-.todo__checkbox-input {
+.todo__input {
   position: absolute;
   opacity: 0;
   width: 0;
   height: 0;
 }
 
+/* CUSTOM CHECKBOX */
+/* Bottom layer */
 .todo__checkbox-custom {
+  position: relative;
+  
   width: 24px;
   height: 24px;
   border-radius: 50%;
   border: 1px solid var(--border-item);
-  position: relative;
+
+
   display: flex;
   align-items: center;
   justify-content: center;
 
-  transition: border-color 0.2s ease;
+  transition: border-color 0.3s ease;
 }
 
-/* Layer 1: Hover Gradient Border Ring (Center stays clear) */
+/* Middle layer */
+/* Hover Gradient Border Ring (Center stays clear) */
 .todo__checkbox-custom::after {
   content: "";
   position: absolute;
@@ -308,36 +283,67 @@ main {
 }
 
 /* Hover: Reveal gradient border ring */
-.todo__checkbox-input:checked + .todo__checkbox-custom::after {
+.todo__label:hover .todo__checkbox-custom::after {
   opacity: 1;
 }
 
 /* Checked: Reveal full solid gradient circle */
-.todo__checkbox-input:checked + .todo__checkbox-custom::before {
+.todo__input:checked + .todo__checkbox-custom::before {
   opacity: 1;
 }
 
 /* Checked: Hide hover border layer to avoid overlap */
-.todo__checkbox-input:checked + .todo__checkbox-custom::after {
+.todo__input:checked + .todo__checkbox-custom::after {
   opacity: 0;
 }
 
 /* Checked: Hide default base border */
-.todo__checkbox-input:checked + .todo__checkbox-custom {
+.todo__input:checked + .todo__checkbox-custom {
   border-color: transparent;
 }
 
 /* Checkmark SVG icon */
 .todo__check-icon {
-  display: none;
-  z-index: 1;
-}
-
-.todo__checkbox-input:checked + .todo__checkbox-custom .todo__check-icon {
   display: block;
+  z-index: 1;
+  opacity: 0;
+
+  transition: opacity 0.2s ease;
 }
 
-.app__delete-task-btn {
+.todo__input:checked + .todo__checkbox-custom .todo__check-icon {
+  opacity: 1;
+}
+
+.todo__task {
+  transform: translateY(2px);
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.todo__task::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: var(--text-muted);
+
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.todo__input:checked ~ .todo__task {
+  color: var(--text-muted);
+}
+
+.todo__input:checked ~ .todo__task::after {
+  transform: scaleX(1);
+}
+
+.todo__btn--remove {
   background-color: transparent;
   border: none;
   margin-left: auto;
@@ -348,16 +354,16 @@ main {
   transition: opacity 0.3s ease;
 }
 
-.todo__checkbox-label:hover .app__delete-task-btn {
-  /* display: flex; */
+.todo__label:hover .todo__btn--remove {
   opacity: 1;
 }
 
-.app__cross-icon {
+.todo__icon--cross {
   max-width: 100%;
   height: auto;
 }
 
+/* CONTROLS */
 .app__todo-controls {
   display: flex;
   justify-content: space-between;
@@ -372,6 +378,10 @@ main {
   gap: 1.25rem;
 }
 
+.active-filter {
+  color: var(--clr-accent);
+}
+
 .app__filter-btn,
 .app__clear-completed-btn {
   background-color: transparent;
@@ -384,10 +394,6 @@ main {
 
 .app__filter-btn {
   font-weight: 700;
-}
-
-.active-filter {
-  color: var(--clr-accent);
 }
 
 .app__filter-btn:not(.active-filter):hover,
