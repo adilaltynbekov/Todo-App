@@ -310,7 +310,8 @@ main {
 }
 
 /* Hover: Reveal gradient border ring */
-.app__todo:not(.todo-completed):not(:has(.todo__input:checked)):hover .todo__checkbox-custom::after {
+.app__todo:not(.todo-completed):not(:has(.todo__input:checked)):hover
+  .todo__checkbox-custom::after {
   opacity: 1;
 }
 
