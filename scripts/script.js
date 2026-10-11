@@ -1,5 +1,9 @@
 const themeSwitchBtn = document.querySelector(".header__theme-switch-btn");
 const themeBtnIcon = document.querySelector(".header__btn-icon");
+const itemsLeft = document.querySelector(".app__items-left");
+const todoInput = document.querySelector(".app__todo-input");
+const todoForm = document.querySelector(".app__todo-form");
+const todoList = document.querySelector(".app__todo-list");
 
 themeSwitchBtn.addEventListener("click", function () {
   // Toggle between light and dark
@@ -11,10 +15,6 @@ themeSwitchBtn.addEventListener("click", function () {
     isLight ? "dark" : "light",
   );
 });
-
-const todoInput = document.querySelector(".app__todo-input");
-const todoForm = document.querySelector(".app__todo-form");
-const todoList = document.querySelector(".app__todo-list");
 
 todoForm.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -50,12 +50,30 @@ todoForm.addEventListener("submit", function (e) {
 
   todoList.insertAdjacentHTML("beforeend", newTodo);
   todoInput.value = "";
+
+  renderItemsLeft();
 });
 
 todoList.addEventListener("click", function (e) {
-  const removeBtn = e.target.closest('.todo__btn--remove');
+  const removeBtn = e.target.closest(".todo__btn--remove");
+  console.log(e.target.closest(".todo__btn--remove"));
   if (removeBtn) {
-    const todoItem = removeBtn.closest('li');
+    const todoItem = removeBtn.closest("li");
     todoItem.remove();
   }
+
+  renderItemsLeft();
 });
+
+const renderItemsLeft = function () {
+  const todoElements = document.querySelectorAll(".app__todo");
+  let itemsCount = 0;
+  for (let i = 0; i < todoElements.length; i++) {
+    if (!todoElements[i].classList.contains("todo-completed")) {
+      itemsCount++;
+    }
+  }
+  itemsLeft.textContent = `${itemsCount} items left`;
+};
+
+renderItemsLeft();
