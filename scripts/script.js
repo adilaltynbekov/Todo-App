@@ -56,13 +56,11 @@ todoForm.addEventListener("submit", function (e) {
 
 todoList.addEventListener("click", function (e) {
   const removeBtn = e.target.closest(".todo__btn--remove");
-  console.log(e.target.closest(".todo__btn--remove"));
   if (removeBtn) {
     const todoItem = removeBtn.closest("li");
     todoItem.remove();
+    renderItemsLeft();
   }
-
-  renderItemsLeft();
 });
 
 const renderItemsLeft = function () {
@@ -77,3 +75,16 @@ const renderItemsLeft = function () {
 };
 
 renderItemsLeft();
+
+todoList.addEventListener("change", function (e) {
+  // const isChecked = e.target.checked;
+  // console.log(isChecked);
+
+  const labelElement = e.target.closest(".todo__label");
+  const todoElement = labelElement.closest(".app__todo");
+
+  if (labelElement) {
+    todoElement.classList.toggle("todo-completed");
+    renderItemsLeft();
+  }
+});
