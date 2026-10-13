@@ -16,6 +16,7 @@ themeSwitchBtn.addEventListener("click", function () {
   );
 });
 
+// Add a new todo
 todoForm.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -54,6 +55,7 @@ todoForm.addEventListener("submit", function (e) {
   renderItemsLeft();
 });
 
+// Remove a todo element
 todoList.addEventListener("click", function (e) {
   const removeBtn = e.target.closest(".todo__btn--remove");
   if (removeBtn) {
@@ -63,6 +65,7 @@ todoList.addEventListener("click", function (e) {
   }
 });
 
+// Render current left-items counter
 const renderItemsLeft = function () {
   const todoElements = document.querySelectorAll(".app__todo");
   let itemsCount = 0;
@@ -76,6 +79,7 @@ const renderItemsLeft = function () {
 
 renderItemsLeft();
 
+// Toggle todo-completed
 todoList.addEventListener("change", function (e) {
   // const isChecked = e.target.checked;
   // console.log(isChecked);
@@ -86,5 +90,18 @@ todoList.addEventListener("change", function (e) {
   if (labelElement) {
     todoElement.classList.toggle("todo-completed");
     renderItemsLeft();
+  }
+});
+
+// Clear completed
+const clearCompletedButtonElement = document.querySelector(
+  ".app__clear-completed-btn",
+);
+
+clearCompletedButtonElement.addEventListener("click", function () {
+  const completedTodoElements = document.querySelectorAll('.todo-completed');
+  if (completedTodoElements.length === 0) return;
+  for(const todo of completedTodoElements) {
+    todo.remove();
   }
 });
