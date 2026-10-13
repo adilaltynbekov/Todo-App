@@ -5,6 +5,14 @@ const todoInput = document.querySelector(".app__todo-input");
 const todoForm = document.querySelector(".app__todo-form");
 const todoList = document.querySelector(".app__todo-list");
 
+const moveCompletedTop = function () {
+  const completedTodoElements = document.querySelectorAll(".todo-completed");
+
+  for (const todo of completedTodoElements) {
+    todoList.prepend(todo);
+  }
+};
+
 themeSwitchBtn.addEventListener("click", function () {
   // Toggle between light and dark
   const currentTheme = document.documentElement.getAttribute("data-theme");
@@ -81,8 +89,7 @@ renderItemsLeft();
 
 // Toggle todo-completed
 todoList.addEventListener("change", function (e) {
-  // const isChecked = e.target.checked;
-  // console.log(isChecked);
+  const isChecked = e.target.checked;
 
   const labelElement = e.target.closest(".todo__label");
   const todoElement = labelElement.closest(".app__todo");
@@ -90,6 +97,12 @@ todoList.addEventListener("change", function (e) {
   if (labelElement) {
     todoElement.classList.toggle("todo-completed");
     renderItemsLeft();
+
+    if (isChecked) {
+      moveCompletedTop();
+    } else {
+      todoList.append(todoElement);
+    }
   }
 });
 
@@ -99,9 +112,11 @@ const clearCompletedButtonElement = document.querySelector(
 );
 
 clearCompletedButtonElement.addEventListener("click", function () {
-  const completedTodoElements = document.querySelectorAll('.todo-completed');
-  if (completedTodoElements.length === 0) return;
-  for(const todo of completedTodoElements) {
+  const completedTodoElements = document.querySelectorAll(".todo-completed");
+  if (completedTodoElements === 0) return;
+  for (const todo of completedTodoElements) {
     todo.remove();
   }
 });
+
+// moveCompletedTop();
