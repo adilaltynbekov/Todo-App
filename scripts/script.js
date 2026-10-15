@@ -103,6 +103,8 @@ todoList.addEventListener("change", function (e) {
     } else {
       todoList.append(todoElement);
     }
+
+    applyFilter(filter);
   }
 });
 
@@ -121,44 +123,53 @@ clearCompletedButtonElement.addEventListener("click", function () {
 
 moveCompletedTop();
 
-const filterBtnElements = document.querySelector(".app__filters");
+let filter = "all";
 
-filterBtnElements.addEventListener("click", function (e) {
+const appFiltersElement = document.querySelector(".app__filters");
+
+appFiltersElement.addEventListener("click", function (e) {
   const clickedElement = e.target.closest(".app__filter-btn");
-  const filter = clickedElement?.dataset.filter;
+  if (!clickedElement) return;
+  filter = clickedElement?.dataset.filter;
+
+  const allFilterBtns = document.querySelectorAll('.app__filter-btn')
+
+  for(const btn of allFilterBtns) {
+    btn.classList.remove('active-filter');
+  }
+  
+  clickedElement?.classList.add('active-filter');
+
+  applyFilter(filter);
+});
+
+const applyFilter = function (filterType) {
+  // Make every todo visible
   const allTodoElements = document.querySelectorAll(".app__todo");
-  const currentHoveredElement = document.querySelector(".active-filter");
-
-  currentHoveredElement.classList.toggle("active-filter");
-
   for (const todo of allTodoElements) {
     todo.style.display = "flex";
   }
 
-  console.log(filter);
-  switch (filter) {
+  switch (filterType) {
     case "all":
-      clickedElement.classList.toggle("active-filter");
       break;
     case "active":
       const inActiveElements = document.querySelectorAll(".todo-completed");
 
-      console.log(currentHoveredElement);
       for (const todo of inActiveElements) {
         todo.style.display = "none";
       }
 
-      clickedElement.classList.toggle("active-filter");
       break;
     case "completed":
       const activeElements = document.querySelectorAll(
         ".app__todo:not(.todo-completed)",
       );
+
       for (const todo of activeElements) {
         todo.style.display = "none";
       }
 
-      clickedElement.classList.toggle("active-filter");
       break;
   }
-});
+};
