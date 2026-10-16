@@ -68,10 +68,19 @@ todoList.addEventListener("click", function (e) {
   const removeBtn = e.target.closest(".todo__btn--remove");
   if (removeBtn) {
     const todoItem = removeBtn.closest("li");
-    todoItem.remove();
+    removeItem(todoItem);
     renderItemsLeft();
   }
 });
+
+const removeItem = function (item) {
+  item.classList.add("is-filtered-out");
+  item.addEventListener("transitionend", function (e) {
+    if (e.propertyName === "height") {
+      item.remove();
+    }
+  });
+};
 
 // Render current left-items counter
 const renderItemsLeft = function () {
@@ -96,7 +105,6 @@ todoList.addEventListener("change", function (e) {
 
   if (labelElement) {
     todoElement.classList.toggle("todo-completed");
-    renderItemsLeft();
 
     if (isChecked) {
       moveCompletedTop();
@@ -105,6 +113,7 @@ todoList.addEventListener("change", function (e) {
     }
 
     applyFilter(filter);
+    renderItemsLeft();
   }
 });
 
@@ -132,13 +141,13 @@ appFiltersElement.addEventListener("click", function (e) {
   if (!clickedElement) return;
   filter = clickedElement?.dataset.filter;
 
-  const allFilterBtns = document.querySelectorAll('.app__filter-btn')
+  const allFilterBtns = document.querySelectorAll(".app__filter-btn");
 
-  for(const btn of allFilterBtns) {
-    btn.classList.remove('active-filter');
+  for (const btn of allFilterBtns) {
+    btn.classList.remove("active-filter");
   }
-  
-  clickedElement?.classList.add('active-filter');
+
+  clickedElement?.classList.add("active-filter");
 
   applyFilter(filter);
 });
@@ -147,7 +156,7 @@ const applyFilter = function (filterType) {
   // Make every todo visible
   const allTodoElements = document.querySelectorAll(".app__todo");
   for (const todo of allTodoElements) {
-    todo.style.display = "flex";
+    todo.classList.remove("is-filtered-out");
   }
 
   switch (filterType) {
@@ -157,7 +166,7 @@ const applyFilter = function (filterType) {
       const inActiveElements = document.querySelectorAll(".todo-completed");
 
       for (const todo of inActiveElements) {
-        todo.style.display = "none";
+        todo.classList.add("is-filtered-out");
       }
 
       break;
@@ -167,7 +176,7 @@ const applyFilter = function (filterType) {
       );
 
       for (const todo of activeElements) {
-        todo.style.display = "none";
+        todo.classList.add("is-filtered-out");
       }
 
       break;
