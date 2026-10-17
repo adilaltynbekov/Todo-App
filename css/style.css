@@ -223,29 +223,25 @@ main {
   align-items: center;
   gap: 1.25rem;
 
+  max-height: 65px;
   opacity: 1;
-  transform: scaleY(1);
-  transform-origin: top; /* Collapses from the top down */
-  overflow: hidden; /* Hides content as it squishes */
+  overflow: hidden;
+
   transition:
-    height 0.3s ease,
     border 0.3s ease,
     opacity 0.3s ease,
-    transform 0.3s ease,
-    margin 0.3s ease,
-    padding 0.3s ease;
+    padding 0.3s ease,
+    max-height 0.3s ease;
 }
 
 .app__todo.is-filtered-out {
   opacity: 0;
-  transform: scaleY(0);
-  /* margin-top: 0;
-  margin-bottom: 0; */
   padding-top: 0;
   padding-bottom: 0;
   pointer-events: none;
-  height: 0;
   border: 0;
+
+  max-height: 0;
 }
 
 /* Checked gradient background on custom checkbox */

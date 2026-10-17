@@ -69,15 +69,15 @@ todoList.addEventListener("click", function (e) {
   if (removeBtn) {
     const todoItem = removeBtn.closest("li");
     removeItem(todoItem);
-    renderItemsLeft();
   }
 });
 
 const removeItem = function (item) {
   item.classList.add("is-filtered-out");
   item.addEventListener("transitionend", function (e) {
-    if (e.propertyName === "height") {
+    if (e.propertyName === "max-height") {
       item.remove();
+      renderItemsLeft();
     }
   });
 };
