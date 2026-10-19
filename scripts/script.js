@@ -31,30 +31,32 @@ todoForm.addEventListener("submit", function (e) {
   const inputText = todoInput.value;
 
   const newTodo = `<li class="app__todo">
-                    <label class="todo__label">
-                      <input type="checkbox" class="todo__input" />
-                      <span class="todo__checkbox-custom">
+                    <div class="todo__wrapper">
+                      <label class="todo__label">
+                        <input type="checkbox" class="todo__input" />
+                        <span class="todo__checkbox-custom">
+                          <img
+                            src="./images/icon-check.svg"
+                            alt=""
+                            class="todo__check-icon"
+                          />
+                        </span>
+                      </label>
+                      <span class="todo__task"
+                        >${inputText}</span
+                      >
+                      <button
+                        class="todo__btn--remove"
+                        type="button"
+                        aria-label="Remove task"
+                      >
                         <img
-                          src="./images/icon-check.svg"
+                          class="todo__icon--cross"
+                          src="./images/icon-cross.svg"
                           alt=""
-                          class="todo__check-icon"
                         />
-                      </span>
-                    </label>
-                    <span class="todo__task"
-                      >${inputText}</span
-                    >
-                    <button
-                      class="todo__btn--remove"
-                      type="button"
-                      aria-label="Remove task"
-                    >
-                      <img
-                        class="todo__icon--cross"
-                        src="./images/icon-cross.svg"
-                        alt=""
-                      />
-                    </button>
+                      </button>
+                    </div>
                   </li>`;
 
   todoList.insertAdjacentHTML("beforeend", newTodo);
@@ -73,13 +75,15 @@ todoList.addEventListener("click", function (e) {
 });
 
 const removeItem = function (item) {
-  item.classList.add("is-filtered-out");
-  item.addEventListener("transitionend", function (e) {
-    if (e.propertyName === "max-height") {
+  item.classList.add("is-collapsing");
+  item.addEventListener(
+    "transitionend",
+    () => {
       item.remove();
       renderItemsLeft();
-    }
-  });
+    },
+    { once: true },
+  );
 };
 
 // Render current left-items counter
@@ -126,7 +130,7 @@ clearCompletedButtonElement.addEventListener("click", function () {
   const completedTodoElements = document.querySelectorAll(".todo-completed");
   if (completedTodoElements === 0) return;
   for (const todo of completedTodoElements) {
-    todo.remove();
+    removeItem(todo);
   }
 });
 
@@ -156,7 +160,7 @@ const applyFilter = function (filterType) {
   // Make every todo visible
   const allTodoElements = document.querySelectorAll(".app__todo");
   for (const todo of allTodoElements) {
-    todo.classList.remove("is-filtered-out");
+    todo.classList.remove("is-collapsing");
   }
 
   switch (filterType) {
@@ -166,7 +170,7 @@ const applyFilter = function (filterType) {
       const inActiveElements = document.querySelectorAll(".todo-completed");
 
       for (const todo of inActiveElements) {
-        todo.classList.add("is-filtered-out");
+        todo.classList.add("is-collapsing");
       }
 
       break;
@@ -176,7 +180,7 @@ const applyFilter = function (filterType) {
       );
 
       for (const todo of activeElements) {
-        todo.classList.add("is-filtered-out");
+        todo.classList.add("is-collapsing");
       }
 
       break;
