@@ -217,31 +217,31 @@ main {
 }
 
 .app__todo {
-  padding: 1.25rem;
-  border-bottom: 1px solid var(--border-item);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+
+  opacity: 1;
+  visibility: visible;
+
+  transition:
+    grid-template-rows 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.app__todo.is-collapsing {
+  grid-template-rows: minmax(0, 0fr);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.todo__wrapper {
   display: flex;
   align-items: center;
   gap: 1.25rem;
-
-  max-height: 65px;
-  opacity: 1;
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border-item);
   overflow: hidden;
-
-  transition:
-    border 0.3s ease,
-    opacity 0.3s ease,
-    padding 0.3s ease,
-    max-height 0.3s ease;
-}
-
-.app__todo.is-filtered-out {
-  opacity: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  pointer-events: none;
-  border: 0;
-
-  max-height: 0;
+  min-height: 0;
 }
 
 /* Checked gradient background on custom checkbox */
@@ -366,6 +366,8 @@ main {
 .todo__task {
   position: relative;
   transition: color 0.2s ease;
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 .todo__task::after {
@@ -400,6 +402,7 @@ main {
   transition: opacity 0.3s ease;
   pointer-events: none;
   margin-left: auto;
+  flex-shrink: 0;
 }
 
 .app__todo:hover .todo__btn--remove {
