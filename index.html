@@ -66,7 +66,7 @@
             type="text"
             placeholder="Create a new todo..."
             autocomplete="off"
-            />
+          />
         </form>
 
         <!-- Todo stack container -->
@@ -74,84 +74,90 @@
           <!-- Stack list -->
           <ul class="app__todo-list">
             <li class="app__todo">
-              <label class="todo__label">
-                <input type="checkbox" class="todo__input" />
-                <span class="todo__checkbox-custom">
+              <div class="todo__wrapper">
+                <label class="todo__label">
+                  <input type="checkbox" class="todo__input" />
+                  <span class="todo__checkbox-custom">
+                    <img
+                      src="./images/icon-check.svg"
+                      alt=""
+                      class="todo__check-icon"
+                    />
+                  </span>
+                </label>
+                <span class="todo__task"
+                  >Complete this Frontend Mentor Challenge</span
+                >
+                <button
+                  class="todo__btn--remove"
+                  type="button"
+                  aria-label="Remove task"
+                >
                   <img
-                    src="./images/icon-check.svg"
+                    class="todo__icon--cross"
+                    src="./images/icon-cross.svg"
                     alt=""
-                    class="todo__check-icon"
                   />
-                </span>
-              </label>
-              <span class="todo__task"
-                >Complete this Frontend Mentor Challenge</span
-              >
-              <button
-                class="todo__btn--remove"
-                type="button"
-                aria-label="Remove task"
-              >
-                <img
-                  class="todo__icon--cross"
-                  src="./images/icon-cross.svg"
-                  alt=""
-                />
-              </button>
+                </button>
+              </div>
             </li>
 
             <li class="app__todo">
-              <label class="todo__label">
-                <input type="checkbox" class="todo__input" />
-                <span class="todo__checkbox-custom">
+              <div class="todo__wrapper">
+                <label class="todo__label">
+                  <input type="checkbox" class="todo__input" />
+                  <span class="todo__checkbox-custom">
+                    <img
+                      src="./images/icon-check.svg"
+                      alt=""
+                      class="todo__check-icon"
+                    />
+                  </span>
+                </label>
+                <span class="todo__task"
+                  >Finish 100 days of code challenge 🚀</span
+                >
+                <button
+                  class="todo__btn--remove"
+                  type="button"
+                  aria-label="Remove task"
+                >
                   <img
-                    src="./images/icon-check.svg"
+                    class="todo__icon--cross"
+                    src="./images/icon-cross.svg"
                     alt=""
-                    class="todo__check-icon"
                   />
-                </span>
-              </label>
-              <span class="todo__task"
-                >Finish 100 days of code challenge 🚀</span
-              >
-              <button
-                class="todo__btn--remove"
-                type="button"
-                aria-label="Remove task"
-              >
-                <img
-                  class="todo__icon--cross"
-                  src="./images/icon-cross.svg"
-                  alt=""
-                />
-              </button>
+                </button>
+              </div>
             </li>
 
             <li class="app__todo todo-completed">
-              <label class="todo__label">
-                <input type="checkbox" class="todo__input" checked/>
-                <span class="todo__checkbox-custom">
+              <div class="todo__wrapper">
+                <label class="todo__label">
+                  <input type="checkbox" class="todo__input" checked />
+                  <span class="todo__checkbox-custom">
+                    <img
+                      src="./images/icon-check.svg"
+                      alt=""
+                      class="todo__check-icon"
+                    />
+                  </span>
+                </label>
+                <span class="todo__task"
+                  >Finish day 17 of 100 days of code challenge 🚀</span
+                >
+                <button
+                  class="todo__btn--remove"
+                  type="button"
+                  aria-label="Remove task"
+                >
                   <img
-                    src="./images/icon-check.svg"
+                    class="todo__icon--cross"
+                    src="./images/icon-cross.svg"
                     alt=""
-                    class="todo__check-icon"
                   />
-                </span>
-              </label>
-              <span class="todo__task"
-                >Finish day 17 of 100 days of code challenge 🚀</span
-              >
-              <button
-                class="todo__btn--remove"
-                type="button"
-                aria-label="Remove task"
-              >
-                <img
-                  class="todo__icon--cross"
-                  src="./images/icon-cross.svg"
-                  alt=""
-                />
-              </button>
+                </button>
+              </div>
             </li>
           </ul>
 
@@ -159,11 +165,27 @@
           <div class="app__todo-controls">
             <span class="app__items-left">0 items left</span>
             <div class="app__filters">
-              <button class="app__filter-btn active-filter" type="button" data-filter="all">
+              <button
+                class="app__filter-btn active-filter"
+                type="button"
+                data-filter="all"
+              >
                 All
               </button>
-              <button class="app__filter-btn" type="button" data-filter="active">Active</button>
-              <button class="app__filter-btn" type="button" data-filter="completed">Completed</button>
+              <button
+                class="app__filter-btn"
+                type="button"
+                data-filter="active"
+              >
+                Active
+              </button>
+              <button
+                class="app__filter-btn"
+                type="button"
+                data-filter="completed"
+              >
+                Completed
+              </button>
             </div>
             <button class="app__clear-completed-btn" type="button">
               Clear Completed
