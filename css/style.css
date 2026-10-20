@@ -225,7 +225,8 @@ main {
 
   transition:
     grid-template-rows 0.3s ease,
-    opacity 0.3s ease;
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .app__todo.is-collapsing {

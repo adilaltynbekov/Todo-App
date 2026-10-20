@@ -5,14 +5,6 @@ const todoInput = document.querySelector(".app__todo-input");
 const todoForm = document.querySelector(".app__todo-form");
 const todoList = document.querySelector(".app__todo-list");
 
-const moveCompletedTop = function () {
-  const completedTodoElements = document.querySelectorAll(".todo-completed");
-
-  for (const todo of completedTodoElements) {
-    todoList.prepend(todo);
-  }
-};
-
 themeSwitchBtn.addEventListener("click", function () {
   // Toggle between light and dark
   const currentTheme = document.documentElement.getAttribute("data-theme");
@@ -100,16 +92,34 @@ const renderItemsLeft = function () {
 
 renderItemsLeft();
 
-// Toggle todo-completed
+// Mark a checkbox (complete todo)
 todoList.addEventListener("change", function (e) {
   const isChecked = e.target.checked;
-
   const labelElement = e.target.closest(".todo__label");
   const todoElement = labelElement.closest(".app__todo");
+  const firstRectPosition = todoElement.getBoundingClientRect();
+
+  const allTodoElements = document.querySelectorAll('.app__todo');
+
+  const todosArray = [...allTodoElements];
+
+  for(const [index, todo] of todosArray.entries()) {
+    if (todo === todoElement) {
+      todosArray.splice(index, 1);
+    }
+  }
+  console.log(todosArray)
+
+  let firstPositionsArray = [];
+
+  for(const todo of todosArray) {
+    firstPositionsArray.push(todo.getBoundingClientRect());
+  }
+  console.log(firstPositionsArray)
 
   if (labelElement) {
     todoElement.classList.toggle("todo-completed");
-
+    
     if (isChecked) {
       moveCompletedTop();
     } else {
@@ -119,7 +129,48 @@ todoList.addEventListener("change", function (e) {
     applyFilter(filter);
     renderItemsLeft();
   }
+
+  const lastRectPosition = todoElement.getBoundingClientRect();
+
+  const firstLastDifference = firstRectPosition.top - lastRectPosition.top;
+  console.log(firstLastDifference)
+
+  todoElement.style.transition = "none";
+  todoElement.style.transform = `translateY(${firstLastDifference}px)`;
+  
+  requestAnimationFrame(() => {
+    todoElement.style.transition = "";
+    todoElement.style.transform = `translateY(0px)`
+  });
+
+  // Other li elements
+  let lastPositionsArray = [];
+  
+  for(const todo of todosArray) {
+    lastPositionsArray.push(todo.getBoundingClientRect())
+  }
+  console.log(lastPositionsArray)
+
+  for(const [index, todo] of todosArray.entries()) {
+    const theDifference = firstPositionsArray[index].top - lastPositionsArray[index].top;
+    console.log(theDifference)
+    todo.style.transition = "none";
+    todo.style.transform = `translateY(${theDifference}px)`;
+
+    requestAnimationFrame(() => {
+    todo.style.transition = "";
+    todo.style.transform = `translateY(0px)`
+  });
+  }
 });
+
+const moveCompletedTop = function () {
+  const completedTodoElements = document.querySelectorAll(".todo-completed");
+
+  for (const todo of completedTodoElements) {
+    todoList.prepend(todo);
+  }
+};
 
 // Clear completed
 const clearCompletedButtonElement = document.querySelector(
