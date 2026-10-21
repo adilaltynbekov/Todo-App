@@ -88,6 +88,7 @@ const renderItemsLeft = function () {
     }
   }
   itemsLeft.textContent = `${itemsCount} items left`;
+  console.log(itemsCount);
 };
 
 renderItemsLeft();
@@ -97,29 +98,59 @@ todoList.addEventListener("change", function (e) {
   const isChecked = e.target.checked;
   const labelElement = e.target.closest(".todo__label");
   const todoElement = labelElement.closest(".app__todo");
+
+  console.log(filter);
+  if (filter === "all") {
+    runFlipAnimation(e);
+  } else {
+    if (labelElement) {
+      todoElement.classList.add("is-collapsing");
+
+      const handleTransitionEnd = (event) => {
+        if (event.propertyName === "grid-template-rows") {
+          todoElement.removeEventListener("transitionend", handleTransitionEnd);
+
+          todoElement.classList.toggle("todo-completed");
+          if (isChecked) {
+            todoList.prepend(todoElement);
+          } else {
+            todoList.append(todoElement);
+          }
+          console.log(1234);
+          applyFilter(filter);
+          renderItemsLeft();
+        }
+      };
+
+      todoElement.addEventListener("transitionend", handleTransitionEnd);
+    }
+  }
+});
+
+const runFlipAnimation = function (e) {
+  const isChecked = e.target.checked;
+  const labelElement = e.target.closest(".todo__label");
+  const todoElement = labelElement.closest(".app__todo");
+
   const firstRectPosition = todoElement.getBoundingClientRect();
-
-  const allTodoElements = document.querySelectorAll('.app__todo');
-
+  const allTodoElements = document.querySelectorAll(".app__todo");
   const todosArray = [...allTodoElements];
 
-  for(const [index, todo] of todosArray.entries()) {
+  for (const [index, todo] of todosArray.entries()) {
     if (todo === todoElement) {
       todosArray.splice(index, 1);
     }
   }
-  console.log(todosArray)
 
   let firstPositionsArray = [];
 
-  for(const todo of todosArray) {
+  for (const todo of todosArray) {
     firstPositionsArray.push(todo.getBoundingClientRect());
   }
-  console.log(firstPositionsArray)
 
   if (labelElement) {
     todoElement.classList.toggle("todo-completed");
-    
+
     if (isChecked) {
       todoList.prepend(todoElement);
     } else {
@@ -133,36 +164,34 @@ todoList.addEventListener("change", function (e) {
   const lastRectPosition = todoElement.getBoundingClientRect();
 
   const firstLastDifference = firstRectPosition.top - lastRectPosition.top;
-  console.log(firstLastDifference)
 
   todoElement.style.transition = "none";
   todoElement.style.transform = `translateY(${firstLastDifference}px)`;
-  
+
   requestAnimationFrame(() => {
     todoElement.style.transition = "";
-    todoElement.style.transform = `translateY(0px)`
+    todoElement.style.transform = `translateY(0px)`;
   });
 
   // Other li elements
   let lastPositionsArray = [];
-  
-  for(const todo of todosArray) {
-    lastPositionsArray.push(todo.getBoundingClientRect())
-  }
-  console.log(lastPositionsArray)
 
-  for(const [index, todo] of todosArray.entries()) {
-    const theDifference = firstPositionsArray[index].top - lastPositionsArray[index].top;
-    console.log(theDifference)
+  for (const todo of todosArray) {
+    lastPositionsArray.push(todo.getBoundingClientRect());
+  }
+
+  for (const [index, todo] of todosArray.entries()) {
+    const theDifference =
+      firstPositionsArray[index].top - lastPositionsArray[index].top;
     todo.style.transition = "none";
     todo.style.transform = `translateY(${theDifference}px)`;
 
     requestAnimationFrame(() => {
-    todo.style.transition = "";
-    todo.style.transform = `translateY(0px)`
-  });
+      todo.style.transition = "";
+      todo.style.transform = `translateY(0px)`;
+    });
   }
-});
+};
 
 const moveCompletedTop = function () {
   const completedTodoElements = document.querySelectorAll(".todo-completed");
