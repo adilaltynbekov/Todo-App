@@ -121,7 +121,7 @@ todoList.addEventListener("change", function (e) {
     todoElement.classList.toggle("todo-completed");
     
     if (isChecked) {
-      moveCompletedTop();
+      todoList.prepend(todoElement);
     } else {
       todoList.append(todoElement);
     }
