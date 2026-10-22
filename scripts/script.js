@@ -88,7 +88,6 @@ const renderItemsLeft = function () {
     }
   }
   itemsLeft.textContent = `${itemsCount} items left`;
-  console.log(itemsCount);
 };
 
 renderItemsLeft();
@@ -99,30 +98,46 @@ todoList.addEventListener("change", function (e) {
   const labelElement = e.target.closest(".todo__label");
   const todoElement = labelElement.closest(".app__todo");
 
-  console.log(filter);
   if (filter === "all") {
     runFlipAnimation(e);
   } else {
     if (labelElement) {
-      todoElement.classList.add("is-collapsing");
+      const taskElement = todoElement.querySelector(".todo__task");
 
-      const handleTransitionEnd = (event) => {
-        if (event.propertyName === "grid-template-rows") {
-          todoElement.removeEventListener("transitionend", handleTransitionEnd);
+      todoElement.classList.toggle("todo-completed");
 
-          todoElement.classList.toggle("todo-completed");
-          if (isChecked) {
-            todoList.prepend(todoElement);
-          } else {
-            todoList.append(todoElement);
-          }
-          console.log(1234);
-          applyFilter(filter);
-          renderItemsLeft();
+      const handleTaskTransitionEnd = (event) => {
+        if (event.propertyName === "color") {
+          taskElement.removeEventListener(
+            "transitionend",
+            handleTaskTransitionEnd,
+          );
+
+          requestAnimationFrame(() => {
+            todoElement.classList.add("is-collapsing");
+          });
+
+          const handleTransitionEnd = (event) => {
+            if (event.propertyName === "grid-template-rows") {
+              todoElement.removeEventListener(
+                "transitionend",
+                handleTransitionEnd,
+              );
+              if (isChecked) {
+                todoList.prepend(todoElement);
+              } else {
+                todoList.append(todoElement);
+              }
+              applyFilter(filter);
+              renderItemsLeft();
+            }
+          };
+
+          todoElement.addEventListener("transitionend", handleTransitionEnd);
         }
       };
 
-      todoElement.addEventListener("transitionend", handleTransitionEnd);
+      taskElement.addEventListener("transitionend", handleTaskTransitionEnd);
     }
   }
 });
@@ -131,65 +146,82 @@ const runFlipAnimation = function (e) {
   const isChecked = e.target.checked;
   const labelElement = e.target.closest(".todo__label");
   const todoElement = labelElement.closest(".app__todo");
-
-  const firstRectPosition = todoElement.getBoundingClientRect();
-  const allTodoElements = document.querySelectorAll(".app__todo");
-  const todosArray = [...allTodoElements];
-
-  for (const [index, todo] of todosArray.entries()) {
-    if (todo === todoElement) {
-      todosArray.splice(index, 1);
-    }
-  }
-
-  let firstPositionsArray = [];
-
-  for (const todo of todosArray) {
-    firstPositionsArray.push(todo.getBoundingClientRect());
-  }
+  const taskElement = todoElement.querySelector(".todo__task");
 
   if (labelElement) {
     todoElement.classList.toggle("todo-completed");
 
-    if (isChecked) {
-      todoList.prepend(todoElement);
-    } else {
-      todoList.append(todoElement);
-    }
+    const handleTaskTransitionEnd = (event) => {
+      if (event.propertyName === "color") {
+        taskElement.removeEventListener(
+          "transitionend",
+          handleTaskTransitionEnd,
+        );
 
-    applyFilter(filter);
-    renderItemsLeft();
-  }
+        const firstRectPosition = todoElement.getBoundingClientRect();
+        const allTodoElements = document.querySelectorAll(".app__todo");
+        const todosArray = [...allTodoElements];
 
-  const lastRectPosition = todoElement.getBoundingClientRect();
+        for (const [index, todo] of todosArray.entries()) {
+          if (todo === todoElement) {
+            todosArray.splice(index, 1);
+          }
+        }
 
-  const firstLastDifference = firstRectPosition.top - lastRectPosition.top;
+        let firstPositionsArray = [];
+        for (const todo of todosArray) {
+          firstPositionsArray.push(todo.getBoundingClientRect());
+        }
 
-  todoElement.style.transition = "none";
-  todoElement.style.transform = `translateY(${firstLastDifference}px)`;
+        // Move the item in the DOM now that it's marked
+        if (isChecked) {
+          todoList.prepend(todoElement);
+        } else {
+          todoList.append(todoElement);
+        }
 
-  requestAnimationFrame(() => {
-    todoElement.style.transition = "";
-    todoElement.style.transform = `translateY(0px)`;
-  });
+        applyFilter(filter);
+        renderItemsLeft();
 
-  // Other li elements
-  let lastPositionsArray = [];
+        const lastRectPosition = todoElement.getBoundingClientRect();
+        const firstLastDifference =
+          firstRectPosition.top - lastRectPosition.top;
 
-  for (const todo of todosArray) {
-    lastPositionsArray.push(todo.getBoundingClientRect());
-  }
+        // todoElement.style.transition = "none";
+        todoElement.style.transitionProperty = "transform";
+        todoElement.style.transitionDuration = "0s";
+        todoElement.style.transform = `translateY(${firstLastDifference}px)`;
 
-  for (const [index, todo] of todosArray.entries()) {
-    const theDifference =
-      firstPositionsArray[index].top - lastPositionsArray[index].top;
-    todo.style.transition = "none";
-    todo.style.transform = `translateY(${theDifference}px)`;
+        requestAnimationFrame(() => {
+          // todoElement.style.transition = "";
+          todoElement.style.transitionProperty = "";
+          todoElement.style.transitionDuration = "";
+          todoElement.style.transform = `translateY(0px)`;
+        });
 
-    requestAnimationFrame(() => {
-      todo.style.transition = "";
-      todo.style.transform = `translateY(0px)`;
-    });
+        // Animate bystanders elements
+        let lastPositionsArray = [];
+        for (const todo of todosArray) {
+          lastPositionsArray.push(todo.getBoundingClientRect());
+        }
+
+        for (const [index, todo] of todosArray.entries()) {
+          const theDifference =
+            firstPositionsArray[index].top - lastPositionsArray[index].top;
+          todo.style.transitionProperty = "transform";
+          todo.style.transitionDuration = "0s";
+          todo.style.transform = `translateY(${theDifference}px)`;
+
+          requestAnimationFrame(() => {
+            todo.style.transitionProperty = "";
+            todo.style.transitionDuration = "";
+            todo.style.transform = `translateY(0px)`;
+          });
+        }
+      }
+    };
+
+    taskElement.addEventListener("transitionend", handleTaskTransitionEnd);
   }
 };
 
