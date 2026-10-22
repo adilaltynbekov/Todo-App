@@ -68,14 +68,16 @@ todoList.addEventListener("click", function (e) {
 
 const removeItem = function (item) {
   item.classList.add("is-collapsing");
-  item.addEventListener(
-    "transitionend",
-    () => {
+
+  const handleTransitionEnd = (event) => {
+    if (event.propertyName === "grid-template-rows") {
+      item.removeEventListener('transitionend', handleTransitionEnd);
       item.remove();
       renderItemsLeft();
-    },
-    { once: true },
-  );
+    }
+  };
+
+  item.addEventListener("transitionend", handleTransitionEnd);
 };
 
 // Render current left-items counter
@@ -87,7 +89,7 @@ const renderItemsLeft = function () {
       itemsCount++;
     }
   }
-  itemsLeft.textContent = `${itemsCount} ${itemsCount > 1 || itemsCount === 0? 'items left' : 'item left'}`
+  itemsLeft.textContent = `${itemsCount} ${itemsCount > 1 || itemsCount === 0 ? "items left" : "item left"}`;
   // itemsLeft.textContent = `${itemsCount} items left`;
 };
 
