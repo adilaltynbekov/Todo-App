@@ -426,6 +426,10 @@ main {
   font-size: 1rem;
 }
 
+.app__items-left {
+  min-width: 9.5ch;
+}
+
 .app__filters {
   display: flex;
   gap: 1.25rem;

@@ -87,7 +87,8 @@ const renderItemsLeft = function () {
       itemsCount++;
     }
   }
-  itemsLeft.textContent = `${itemsCount} items left`;
+  itemsLeft.textContent = `${itemsCount} ${itemsCount > 1 || itemsCount === 0? 'items left' : 'item left'}`
+  // itemsLeft.textContent = `${itemsCount} items left`;
 };
 
 renderItemsLeft();
