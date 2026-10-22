@@ -366,7 +366,7 @@ main {
 
 .todo__task {
   position: relative;
-  transition: color 0.2s ease;
+  transition: color 0.3s ease;
   overflow-wrap: break-word;
   min-width: 0;
 }
