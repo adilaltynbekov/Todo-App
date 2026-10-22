@@ -71,7 +71,7 @@ const removeItem = function (item) {
 
   const handleTransitionEnd = (event) => {
     if (event.propertyName === "grid-template-rows") {
-      item.removeEventListener('transitionend', handleTransitionEnd);
+      item.removeEventListener("transitionend", handleTransitionEnd);
       item.remove();
       renderItemsLeft();
     }
@@ -116,6 +116,8 @@ todoList.addEventListener("change", function (e) {
             handleTaskTransitionEnd,
           );
 
+          renderItemsLeft();
+
           requestAnimationFrame(() => {
             todoElement.classList.add("is-collapsing");
           });
@@ -132,7 +134,6 @@ todoList.addEventListener("change", function (e) {
                 todoList.append(todoElement);
               }
               applyFilter(filter);
-              renderItemsLeft();
             }
           };
 
@@ -161,6 +162,8 @@ const runFlipAnimation = function (e) {
           handleTaskTransitionEnd,
         );
 
+        renderItemsLeft();
+
         const firstRectPosition = todoElement.getBoundingClientRect();
         const allTodoElements = document.querySelectorAll(".app__todo");
         const todosArray = [...allTodoElements];
@@ -184,7 +187,6 @@ const runFlipAnimation = function (e) {
         }
 
         applyFilter(filter);
-        renderItemsLeft();
 
         const lastRectPosition = todoElement.getBoundingClientRect();
         const firstLastDifference =
