@@ -22,7 +22,7 @@ todoForm.addEventListener("submit", function (e) {
 
   const inputText = todoInput.value;
 
-  const newTodo = `<li class="app__todo">
+  const newTodo = `<li class="app__todo is-collapsing">
                     <div class="todo__wrapper">
                       <label class="todo__label">
                         <input type="checkbox" class="todo__input" />
@@ -52,8 +52,23 @@ todoForm.addEventListener("submit", function (e) {
                   </li>`;
 
   todoList.insertAdjacentHTML("beforeend", newTodo);
-  todoInput.value = "";
+  const newTodoElement = todoList.lastElementChild;
 
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      newTodoElement.classList.remove("is-collapsing");
+    });
+  });
+
+  const handleTransitionEnd = (event) => {
+    if (event.propertyName === "grid-template-rows") {
+      newTodoElement.removeEventListener("transitionend", handleTransitionEnd);
+    }
+  };
+
+  newTodoElement.addEventListener("transitionend", handleTransitionEnd);
+
+  todoInput.value = "";
   renderItemsLeft();
 });
 
