@@ -5,6 +5,53 @@ const todoInput = document.querySelector(".app__todo-input");
 const todoForm = document.querySelector(".app__todo-form");
 const todoList = document.querySelector(".app__todo-list");
 
+let todos = [
+  { id: crypto.randomUUID(), text: "Finish Todo App", completed: false },
+  { id: crypto.randomUUID(), text: "Finish Todo App", completed: false },
+  { id: crypto.randomUUID(), text: "Finish Todo App", completed: false },
+  { id: crypto.randomUUID(), text: "Finish Todo App", completed: false },
+];
+
+const renderTodos = function () {
+  // 1. Take the array of objects and map every object into an HTML string
+  const todoHTMLArray = todos.map((todo) => {
+    return `
+      <li class="app__todo ${todo.completed ? "todo-completed" : ""}" data-id="${todo.id}">
+        <div class="todo__wrapper">
+          <label class="todo__label">
+            <input type="checkbox" class="todo__input" ${todo.completed ? "checked" : ""}/>
+            <span class="todo__checkbox-custom">
+              <img
+                src="./images/icon-check.svg"
+                alt=""
+                class="todo__check-icon"
+              />
+            </span>
+          </label>
+          <span class="todo__task"
+            >${todo.text}</span
+          >
+          <button
+            class="todo__btn--remove"
+            type="button"
+            aria-label="Remove task"
+          >
+            <img
+              class="todo__icon--cross"
+              src="./images/icon-cross.svg"
+              alt=""
+            />
+          </button>
+        </div>
+      </li>`;
+  });
+  // 2. Use .join("") to glue the HTML strings together into one single giant HTML string!
+  todoList.innerHTML = todoHTMLArray.join("");
+
+  // 3. Update the counter footer
+  renderItemsLeft();
+};
+
 themeSwitchBtn.addEventListener("click", function () {
   // Toggle between light and dark
   const currentTheme = document.documentElement.getAttribute("data-theme");
@@ -20,56 +67,75 @@ themeSwitchBtn.addEventListener("click", function () {
 todoForm.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const inputText = todoInput.value;
+  const inputText = todoInput.value.trim();
+  if (!inputText) return;
 
-  const newTodo = `<li class="app__todo is-collapsing">
-                    <div class="todo__wrapper">
-                      <label class="todo__label">
-                        <input type="checkbox" class="todo__input" />
-                        <span class="todo__checkbox-custom">
-                          <img
-                            src="./images/icon-check.svg"
-                            alt=""
-                            class="todo__check-icon"
-                          />
-                        </span>
-                      </label>
-                      <span class="todo__task"
-                        >${inputText}</span
-                      >
-                      <button
-                        class="todo__btn--remove"
-                        type="button"
-                        aria-label="Remove task"
-                      >
-                        <img
-                          class="todo__icon--cross"
-                          src="./images/icon-cross.svg"
-                          alt=""
-                        />
-                      </button>
-                    </div>
-                  </li>`;
-
-  todoList.insertAdjacentHTML("beforeend", newTodo);
-  const newTodoElement = todoList.lastElementChild;
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      newTodoElement.classList.remove("is-collapsing");
-    });
-  });
-
-  const handleTransitionEnd = (event) => {
-    if (event.propertyName === "grid-template-rows") {
-      newTodoElement.removeEventListener("transitionend", handleTransitionEnd);
-    }
+  // 1. Create a new todo object
+  const newTodoObj = {
+    id: crypto.randomUUID(),
+    text: inputText,
+    completed: false,
   };
 
-  newTodoElement.addEventListener("transitionend", handleTransitionEnd);
+  // 2. Push a new object into the array
+  todos.push(newTodoObj);
 
+  // 3. Clear input
   todoInput.value = "";
-  renderItemsLeft();
+
+  // 4. Trigger the render function to updtae the screen
+  renderTodos();
+
+  // const inputText = todoInput.value;
+
+  // const newTodo = `<li class="app__todo is-collapsing">
+  //                   <div class="todo__wrapper">
+  //                     <label class="todo__label">
+  //                       <input type="checkbox" class="todo__input" />
+  //                       <span class="todo__checkbox-custom">
+  //                         <img
+  //                           src="./images/icon-check.svg"
+  //                           alt=""
+  //                           class="todo__check-icon"
+  //                         />
+  //                       </span>
+  //                     </label>
+  //                     <span class="todo__task"
+  //                       >${inputText}</span
+  //                     >
+  //                     <button
+  //                       class="todo__btn--remove"
+  //                       type="button"
+  //                       aria-label="Remove task"
+  //                     >
+  //                       <img
+  //                         class="todo__icon--cross"
+  //                         src="./images/icon-cross.svg"
+  //                         alt=""
+  //                       />
+  //                     </button>
+  //                   </div>
+  //                 </li>`;
+
+  // todoList.insertAdjacentHTML("beforeend", newTodo);
+  // const newTodoElement = todoList.lastElementChild;
+
+  // requestAnimationFrame(() => {
+  //   requestAnimationFrame(() => {
+  //     newTodoElement.classList.remove("is-collapsing");
+  //   });
+  // });
+
+  // const handleTransitionEnd = (event) => {
+  //   if (event.propertyName === "grid-template-rows") {
+  //     newTodoElement.removeEventListener("transitionend", handleTransitionEnd);
+  //   }
+  // };
+
+  // newTodoElement.addEventListener("transitionend", handleTransitionEnd);
+
+  // todoInput.value = "";
+  // renderItemsLeft();
 });
 
 // Remove a todo element
@@ -123,6 +189,7 @@ todoList.addEventListener("change", function (e) {
       const taskElement = todoElement.querySelector(".todo__task");
 
       todoElement.classList.toggle("todo-completed");
+      renderItemsLeft();
 
       const handleTaskTransitionEnd = (event) => {
         if (event.propertyName === "color") {
@@ -131,7 +198,6 @@ todoList.addEventListener("change", function (e) {
             handleTaskTransitionEnd,
           );
 
-          renderItemsLeft();
 
           requestAnimationFrame(() => {
             todoElement.classList.add("is-collapsing");
@@ -169,6 +235,7 @@ const runFlipAnimation = function (e) {
 
   if (labelElement) {
     todoElement.classList.toggle("todo-completed");
+    renderItemsLeft();
 
     const handleTaskTransitionEnd = (event) => {
       if (event.propertyName === "color") {
@@ -176,8 +243,6 @@ const runFlipAnimation = function (e) {
           "transitionend",
           handleTaskTransitionEnd,
         );
-
-        renderItemsLeft();
 
         const firstRectPosition = todoElement.getBoundingClientRect();
         const allTodoElements = document.querySelectorAll(".app__todo");
@@ -318,3 +383,5 @@ const applyFilter = function (filterType) {
       break;
   }
 };
+
+renderTodos();
