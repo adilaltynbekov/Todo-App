@@ -6,15 +6,23 @@ const todoForm = document.querySelector(".app__todo-form");
 const todoList = document.querySelector(".app__todo-list");
 
 let todos = [
-  { id: crypto.randomUUID(), text: "Finish Todo App", completed: false },
-  { id: crypto.randomUUID(), text: "Finish Todo App", completed: true },
-  { id: crypto.randomUUID(), text: "Finish Todo App", completed: true },
-  { id: crypto.randomUUID(), text: "Finish Todo App", completed: false },
+  { id: crypto.randomUUID(), text: "First todo", completed: false },
+  { id: crypto.randomUUID(), text: "Second todo", completed: true },
+  { id: crypto.randomUUID(), text: "Third todo", completed: true },
+  { id: crypto.randomUUID(), text: "Forth todo", completed: false },
 ];
 
-const renderTodos = function () {
+// If filter is 'all', don't add is-collapsing to the todos
+// Else if filter is 'active', add is-collapsing to the todos if completed is 'true'
+// Else if filter is 'completed', add is-collapsing to the todos if completed is 'false'
+
+const renderTodos = function (filter = "all") {
   // 1. Take the array of objects and map every object into an HTML string
-  const todoHTMLArray = todos.map((todo) => {
+  const todoHTMLArray = todos.filter(todo => {
+    if (filter === "active") return todo.completed;
+    if (filter === "completed") return !todo.completed;
+    return true;
+  }).map((todo) => {
     return `
       <li class="app__todo ${todo.completed ? "todo-completed" : ""}" data-id="${todo.id}">
         <div class="todo__wrapper">
@@ -107,7 +115,7 @@ const removeItem = function (item) {
       item.removeEventListener("transitionend", handleTransitionEnd);
 
       // 2. Remove the item from the array using .filter()
-      todos = todos.filter(todo => todo.id !== todoId);
+      todos = todos.filter((todo) => todo.id !== todoId);
 
       // 3. Re-render the UI from the update state array
       renderTodos();
@@ -119,7 +127,7 @@ const removeItem = function (item) {
 
 // Render current left-items counter
 const renderItemsLeft = function () {
-  const incompletedTodos = todos.filter(todo => !todo.completed);
+  const incompletedTodos = todos.filter((todo) => !todo.completed);
   const itemsCount = incompletedTodos.length;
 
   itemsLeft.textContent = `${itemsCount} ${itemsCount > 1 || itemsCount === 0 ? "items left" : "item left"}`;
@@ -128,13 +136,13 @@ const renderItemsLeft = function () {
 // Mark a checkbox (complete todo)
 todoList.addEventListener("change", function (e) {
   const isChecked = e.target.checked;
-  const labelElement = e.target.closest(".todo__label");
-  const todoElement = labelElement.closest(".app__todo");
+  const todoElement = e.target.closest(".app__todo");
+  const todoId = todoElement.dataset.id;
 
   if (filter === "all") {
     runFlipAnimation(e);
   } else {
-    if (labelElement) {
+    if (todoElement) {
       const taskElement = todoElement.querySelector(".todo__task");
 
       todoElement.classList.toggle("todo-completed");
@@ -295,15 +303,16 @@ appFiltersElement.addEventListener("click", function (e) {
   for (const btn of allFilterBtns) {
     btn.classList.remove("active-filter");
   }
-
   clickedElement?.classList.add("active-filter");
 
-  applyFilter(filter);
+  // applyFilter(filter);
+  renderTodos(filter);
 });
 
 const applyFilter = function (filterType) {
   // Make every todo visible
   const allTodoElements = document.querySelectorAll(".app__todo");
+
   for (const todo of allTodoElements) {
     todo.classList.remove("is-collapsing");
   }
