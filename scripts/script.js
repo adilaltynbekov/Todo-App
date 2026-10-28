@@ -16,14 +16,18 @@ let todos = [
 // Else if filter is 'active', add is-collapsing to the todos if completed is 'true'
 // Else if filter is 'completed', add is-collapsing to the todos if completed is 'false'
 
-const renderTodos = function (filter = "all") {
+const renderTodos = function () {
   // 1. Take the array of objects and map every object into an HTML string
-  const todoHTMLArray = todos.filter(todo => {
-    if (filter === "active") return todo.completed;
-    if (filter === "completed") return !todo.completed;
-    return true;
-  }).map((todo) => {
-    return `
+  const todoHTMLArray = todos
+    .slice()
+    .sort((a ,b) => b.completed - a.completed)
+    .filter((todo) => {
+      if (filter === "active") return !todo.completed;
+      if (filter === "completed") return todo.completed;
+      return true;
+    })
+    .map((todo) => {
+      return `
       <li class="app__todo ${todo.completed ? "todo-completed" : ""}" data-id="${todo.id}">
         <div class="todo__wrapper">
           <label class="todo__label">
@@ -52,7 +56,7 @@ const renderTodos = function (filter = "all") {
           </button>
         </div>
       </li>`;
-  });
+    });
   // 2. Use .join("") to glue the HTML strings together into one single giant HTML string!
   todoList.innerHTML = todoHTMLArray.join("");
 
@@ -135,52 +139,61 @@ const renderItemsLeft = function () {
 
 // Mark a checkbox (complete todo)
 todoList.addEventListener("change", function (e) {
-  const isChecked = e.target.checked;
+  // const isChecked = e.target.checked;
   const todoElement = e.target.closest(".app__todo");
+
+  if (!todoElement) return;
+
   const todoId = todoElement.dataset.id;
 
-  if (filter === "all") {
-    runFlipAnimation(e);
-  } else {
-    if (todoElement) {
-      const taskElement = todoElement.querySelector(".todo__task");
+  todos = todos.map((todo) =>
+    todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
+  );
 
-      todoElement.classList.toggle("todo-completed");
-      renderItemsLeft();
+  renderTodos();
 
-      const handleTaskTransitionEnd = (event) => {
-        if (event.propertyName === "color") {
-          taskElement.removeEventListener(
-            "transitionend",
-            handleTaskTransitionEnd,
-          );
+  // if (filter === "all") {
+  //   runFlipAnimation(e);
+  // } else {
+  //   if (todoElement) {
+  //     const taskElement = todoElement.querySelector(".todo__task");
 
-          requestAnimationFrame(() => {
-            todoElement.classList.add("is-collapsing");
-          });
+  //     todoElement.classList.toggle("todo-completed");
+  //     renderItemsLeft();
 
-          const handleTransitionEnd = (event) => {
-            if (event.propertyName === "grid-template-rows") {
-              todoElement.removeEventListener(
-                "transitionend",
-                handleTransitionEnd,
-              );
-              if (isChecked) {
-                todoList.prepend(todoElement);
-              } else {
-                todoList.append(todoElement);
-              }
-              applyFilter(filter);
-            }
-          };
+  //     const handleTaskTransitionEnd = (event) => {
+  //       if (event.propertyName === "color") {
+  //         taskElement.removeEventListener(
+  //           "transitionend",
+  //           handleTaskTransitionEnd,
+  //         );
 
-          todoElement.addEventListener("transitionend", handleTransitionEnd);
-        }
-      };
+  //         requestAnimationFrame(() => {
+  //           todoElement.classList.add("is-collapsing");
+  //         });
 
-      taskElement.addEventListener("transitionend", handleTaskTransitionEnd);
-    }
-  }
+  //         const handleTransitionEnd = (event) => {
+  //           if (event.propertyName === "grid-template-rows") {
+  //             todoElement.removeEventListener(
+  //               "transitionend",
+  //               handleTransitionEnd,
+  //             );
+  //             if (isChecked) {
+  //               todoList.prepend(todoElement);
+  //             } else {
+  //               todoList.append(todoElement);
+  //             }
+  //             applyFilter(filter);
+  //           }
+  //         };
+
+  //         todoElement.addEventListener("transitionend", handleTransitionEnd);
+  //       }
+  //     };
+
+  //     taskElement.addEventListener("transitionend", handleTaskTransitionEnd);
+  //   }
+  // }
 });
 
 const runFlipAnimation = function (e) {
@@ -305,8 +318,7 @@ appFiltersElement.addEventListener("click", function (e) {
   }
   clickedElement?.classList.add("active-filter");
 
-  // applyFilter(filter);
-  renderTodos(filter);
+  renderTodos();
 });
 
 const applyFilter = function (filterType) {
