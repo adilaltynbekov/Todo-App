@@ -7,8 +7,18 @@ const todoList = document.querySelector(".app__todo-list");
 
 let todos = [
   { id: crypto.randomUUID(), text: "First todo", completed: false },
-  { id: crypto.randomUUID(), text: "Second todo", completed: true },
-  { id: crypto.randomUUID(), text: "Third todo", completed: true },
+  {
+    id: crypto.randomUUID(),
+    text: "Second todo",
+    completed: true,
+    completedAt: Date.now(),
+  },
+  {
+    id: crypto.randomUUID(),
+    text: "Third todo",
+    completed: true,
+    completedAt: Date.now(),
+  },
   { id: crypto.randomUUID(), text: "Forth todo", completed: false },
 ];
 
@@ -18,9 +28,18 @@ let todos = [
 
 const renderTodos = function () {
   // 1. Take the array of objects and map every object into an HTML string
+  console.log(todos);
   const todoHTMLArray = todos
     .slice()
-    .sort((a ,b) => b.completed - a.completed)
+    .sort((a, b) => {
+      if (a.completed !== b.completed) {
+        return b.completed - a.completed;
+      }
+      if (!a.completed && !b.completed) {
+        return 0;
+      }
+      return a.completedAt - b.completedAt;
+    })
     .filter((todo) => {
       if (filter === "active") return !todo.completed;
       if (filter === "completed") return todo.completed;
@@ -110,6 +129,7 @@ todoList.addEventListener("click", function (e) {
 
 const removeItem = function (item) {
   // 1. Grab the unique ID from the DOM element's data-id attribute
+  console.log(item);
   const todoId = item.dataset.id;
 
   item.classList.add("is-collapsing");
@@ -146,9 +166,17 @@ todoList.addEventListener("change", function (e) {
 
   const todoId = todoElement.dataset.id;
 
-  todos = todos.map((todo) =>
-    todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
-  );
+  todos = todos.map((todo) => {
+    if (todo.id === todoId) {
+      const nextCompleted = !todo.completed;
+      return {
+        ...todo,
+        completed: nextCompleted,
+        completedAt: nextCompleted ? Date.now() : null,
+      };
+    }
+    return todo;
+  });
 
   renderTodos();
 
@@ -279,13 +307,13 @@ const runFlipAnimation = function (e) {
   }
 };
 
-const moveCompletedTop = function () {
-  const completedTodoElements = document.querySelectorAll(".todo-completed");
+// const moveCompletedTop = function () {
+//   const completedTodoElements = document.querySelectorAll(".todo-completed");
 
-  for (const todo of completedTodoElements) {
-    todoList.prepend(todo);
-  }
-};
+//   for (const todo of completedTodoElements) {
+//     todoList.prepend(todo);
+//   }
+// };
 
 // Clear completed
 const clearCompletedButtonElement = document.querySelector(
@@ -293,14 +321,17 @@ const clearCompletedButtonElement = document.querySelector(
 );
 
 clearCompletedButtonElement.addEventListener("click", function () {
-  const completedTodoElements = document.querySelectorAll(".todo-completed");
-  if (completedTodoElements === 0) return;
-  for (const todo of completedTodoElements) {
-    removeItem(todo);
-  }
+  // const completedTodoElements = document.querySelectorAll(".todo-completed");
+  // if (completedTodoElements === 0) return;
+  // for (const todo of completedTodoElements) {
+  //   removeItem(todo);
+  // }
+
+  todos = todos.filter(todo => !todo.completed);
+  renderTodos();
 });
 
-moveCompletedTop();
+// moveCompletedTop();
 
 let filter = "all";
 
