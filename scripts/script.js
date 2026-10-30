@@ -135,16 +135,18 @@ const removeItem = function (item) {
   const todoId = item.dataset.id;
 
   item.classList.add("is-collapsing");
-
+  todoList.classList.add('is-animating');
+  // 2. Remove the item from the array using .filter()
+  todos = todos.filter((todo) => todo.id !== todoId);
+  renderItemsLeft();
+  
   const handleTransitionEnd = (event) => {
     if (event.propertyName === "grid-template-rows") {
       item.removeEventListener("transitionend", handleTransitionEnd);
-
-      // 2. Remove the item from the array using .filter()
-      todos = todos.filter((todo) => todo.id !== todoId);
-
+      
       // 3. Re-render the UI from the update state array
       renderTodos();
+      todoList.classList.remove('is-animating');
     }
   };
 

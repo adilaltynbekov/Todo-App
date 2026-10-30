@@ -217,6 +217,10 @@ main {
   font-size: 1.125rem;
 }
 
+.app__todo-list.is-animating .app__todo {
+  pointer-events: none;
+}
+
 .app__todo {
   display: grid;
   grid-template-rows: minmax(0, 1fr);
@@ -313,10 +317,11 @@ main {
   border: 1px solid transparent;
   background:
     linear-gradient(var(--bg-app), var(--bg-app)) padding-box,
+    /* linear-gradient(var(--bg-app), red) padding-box, */
     var(--grad-check) border-box;
 
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease;
 }
 
 /* Layer 2: Checked Full Gradient Fill (Center IS gradient) */
@@ -328,7 +333,7 @@ main {
   background: var(--grad-check);
 
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease;
 }
 
 /* Hover: Reveal gradient border ring */
