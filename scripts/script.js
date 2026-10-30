@@ -28,16 +28,18 @@ let todos = [
 
 const renderTodos = function () {
   // 1. Take the array of objects and map every object into an HTML string
-  console.log(todos);
   const todoHTMLArray = todos
     .slice()
     .sort((a, b) => {
+      // If a and b are different
       if (a.completed !== b.completed) {
         return b.completed - a.completed;
       }
+      // If both are uncompleted (false)
       if (!a.completed && !b.completed) {
         return 0;
       }
+      // If both are completed
       return a.completedAt - b.completedAt;
     })
     .filter((todo) => {
@@ -160,25 +162,39 @@ const renderItemsLeft = function () {
 // Mark a checkbox (complete todo)
 todoList.addEventListener("change", function (e) {
   // const isChecked = e.target.checked;
+
+  // Selecting an li element that has been changed
   const todoElement = e.target.closest(".app__todo");
 
+  // Checking if it exists
   if (!todoElement) return;
 
+  // Selecting an id of of a changed element
   const todoId = todoElement.dataset.id;
 
-  todos = todos.map((todo) => {
-    if (todo.id === todoId) {
-      const nextCompleted = !todo.completed;
-      return {
-        ...todo,
-        completed: nextCompleted,
-        completedAt: nextCompleted ? Date.now() : null,
-      };
-    }
-    return todo;
-  });
+  const targetTodo = todos.find((t) => t.id === todoId);
 
-  renderTodos();
+  if (targetTodo) {
+    const nextCompleted = !targetTodo.completed;
+
+    // Create the updated version of the clicked todo
+    const updatedTodo = {
+      ...targetTodo,
+      completed: nextCompleted,
+      completedAt: nextCompleted ? Date.now() : null,
+    };
+
+    if (!nextCompleted) {
+      // Unmarking: Remove it from its spot and append to the bottom
+      const remainingTodos = todos.filter((t) => t.id !== todoId);
+      todos = [...remainingTodos, updatedTodo];
+    } else {
+      // Marking: Standart ummutable update (letting .sort() handle where it goes)
+      todos = todos.map((t) => (t.id === todoId ? updatedTodo : t));
+    }
+
+    renderTodos();
+  }
 
   // if (filter === "all") {
   //   runFlipAnimation(e);
@@ -327,7 +343,7 @@ clearCompletedButtonElement.addEventListener("click", function () {
   //   removeItem(todo);
   // }
 
-  todos = todos.filter(todo => !todo.completed);
+  todos = todos.filter((todo) => !todo.completed);
   renderTodos();
 });
 
