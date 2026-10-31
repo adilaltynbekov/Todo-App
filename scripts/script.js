@@ -135,7 +135,6 @@ const removeItem = function (item) {
   const todoId = item.dataset.id;
 
   item.classList.add("is-collapsing");
-  todoList.classList.add('is-animating');
   // 2. Remove the item from the array using .filter()
   todos = todos.filter((todo) => todo.id !== todoId);
   renderItemsLeft();
@@ -145,8 +144,7 @@ const removeItem = function (item) {
       item.removeEventListener("transitionend", handleTransitionEnd);
       
       // 3. Re-render the UI from the update state array
-      renderTodos();
-      todoList.classList.remove('is-animating');
+      item.remove();
     }
   };
 
@@ -162,7 +160,7 @@ const renderItemsLeft = function () {
 };
 
 // Mark a checkbox (complete todo)
-todoList.addEventListener("change", function (e) {
+todoList.addEventListener("change", function (e) { 
   // const isChecked = e.target.checked;
 
   // Selecting an li element that has been changed
@@ -170,6 +168,8 @@ todoList.addEventListener("change", function (e) {
 
   // Checking if it exists
   if (!todoElement) return;
+
+  // todoElement.classList.toggle('todo-completed');
 
   // Selecting an id of of a changed element
   const todoId = todoElement.dataset.id;
@@ -194,8 +194,6 @@ todoList.addEventListener("change", function (e) {
       // Marking: Standart ummutable update (letting .sort() handle where it goes)
       todos = todos.map((t) => (t.id === todoId ? updatedTodo : t));
     }
-
-    renderTodos();
   }
 
   // if (filter === "all") {
