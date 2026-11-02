@@ -138,11 +138,11 @@ const removeItem = function (item) {
   // 2. Remove the item from the array using .filter()
   todos = todos.filter((todo) => todo.id !== todoId);
   renderItemsLeft();
-  
+
   const handleTransitionEnd = (event) => {
     if (event.propertyName === "grid-template-rows") {
       item.removeEventListener("transitionend", handleTransitionEnd);
-      
+
       // 3. Re-render the UI from the update state array
       item.remove();
     }
@@ -160,7 +160,7 @@ const renderItemsLeft = function () {
 };
 
 // Mark a checkbox (complete todo)
-todoList.addEventListener("change", function (e) { 
+todoList.addEventListener("change", function (e) {
   // const isChecked = e.target.checked;
 
   // Selecting an li element that has been changed
@@ -169,12 +169,11 @@ todoList.addEventListener("change", function (e) {
   // Checking if it exists
   if (!todoElement) return;
 
-  // todoElement.classList.toggle('todo-completed');
-
   // Selecting an id of of a changed element
   const todoId = todoElement.dataset.id;
 
   const targetTodo = todos.find((t) => t.id === todoId);
+  console.log(targetTodo);
 
   if (targetTodo) {
     const nextCompleted = !targetTodo.completed;
@@ -194,6 +193,67 @@ todoList.addEventListener("change", function (e) {
       // Marking: Standart ummutable update (letting .sort() handle where it goes)
       todos = todos.map((t) => (t.id === todoId ? updatedTodo : t));
     }
+
+    const taskElement = todoElement.querySelector(".todo__task");
+
+    todoElement.classList.toggle("todo-completed");
+    if (filter === "all") {
+      if (!nextCompleted) {
+        todoList.appendChild(todoElement);
+      } else {
+        const firstUncompletedTodo = todoList.querySelector(
+          ".app__todo:not(.todo-completed)",
+        );
+        todoList.insertBefore(todoElement, firstUncompletedTodo);
+      }
+      renderItemsLeft();
+    } else if (filter === "active") {
+      // todoElement.classList.toggle("todo-completed");
+
+      const handleTaskTransitionEnd = (event) => {
+        if (event.propertyName === "color") {
+          console.log("inside active state");
+          taskElement.removeEventListener(
+            "transitionend",
+            handleTaskTransitionEnd,
+          );
+
+          requestAnimationFrame(() => {
+            todoElement.classList.add("is-collapsing");
+          });
+
+          const handleTransitionEnd = (event) => {
+            if (event.propertyName === "grid-template-rows") {
+              todoElement.removeEventListener(
+                "transitionend",
+                handleTransitionEnd,
+              );
+              todoElement.remove();
+            }
+          };
+          todoElement.addEventListener("transitionend", handleTransitionEnd);
+        }
+      };
+      taskElement.addEventListener("transitionend", handleTaskTransitionEnd);
+    } else if (filter === "completed") {
+      taskElement.addEventListener(
+        "transitionend",
+        () => {
+          requestAnimationFrame(() => {
+            todoElement.classList.add("is-collapsing");
+            todoElement.addEventListener(
+              "transitionend",
+              () => {
+                todoElement.remove();
+              },
+              { once: true },
+            );
+          });
+        },
+        { once: true },
+      );
+    }
+    renderItemsLeft();
   }
 
   // if (filter === "all") {
