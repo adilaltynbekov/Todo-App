@@ -194,10 +194,33 @@ todoList.addEventListener("change", function (e) {
       todos = todos.map((t) => (t.id === todoId ? updatedTodo : t));
     }
 
+    todoElement.classList.toggle("todo-completed");
+
     const taskElement = todoElement.querySelector(".todo__task");
 
-    todoElement.classList.toggle("todo-completed");
-    if (filter === "all") {
+    if (
+      (filter === "active" && nextCompleted) ||
+      (filter === "completed" && !nextCompleted)
+    ) {
+      taskElement.addEventListener(
+        "transitionend",
+        (taskEvent) => {
+          if (taskEvent.propertyName === "color") {
+            todoElement.classList.add("is-collapsing");
+
+            todoElement.addEventListener(
+              "transitionend",
+              (event) => {
+                if (event.propertyName === "grid-template-rows") {
+                  todoElement.remove();
+                }
+              },
+            );
+          }
+        },
+        { once: true },
+      );
+    } else {
       if (!nextCompleted) {
         todoList.appendChild(todoElement);
       } else {
@@ -206,53 +229,8 @@ todoList.addEventListener("change", function (e) {
         );
         todoList.insertBefore(todoElement, firstUncompletedTodo);
       }
-      renderItemsLeft();
-    } else if (filter === "active") {
-      // todoElement.classList.toggle("todo-completed");
-
-      const handleTaskTransitionEnd = (event) => {
-        if (event.propertyName === "color") {
-          console.log("inside active state");
-          taskElement.removeEventListener(
-            "transitionend",
-            handleTaskTransitionEnd,
-          );
-
-          requestAnimationFrame(() => {
-            todoElement.classList.add("is-collapsing");
-          });
-
-          const handleTransitionEnd = (event) => {
-            if (event.propertyName === "grid-template-rows") {
-              todoElement.removeEventListener(
-                "transitionend",
-                handleTransitionEnd,
-              );
-              todoElement.remove();
-            }
-          };
-          todoElement.addEventListener("transitionend", handleTransitionEnd);
-        }
-      };
-      taskElement.addEventListener("transitionend", handleTaskTransitionEnd);
-    } else if (filter === "completed") {
-      taskElement.addEventListener(
-        "transitionend",
-        () => {
-          requestAnimationFrame(() => {
-            todoElement.classList.add("is-collapsing");
-            todoElement.addEventListener(
-              "transitionend",
-              () => {
-                todoElement.remove();
-              },
-              { once: true },
-            );
-          });
-        },
-        { once: true },
-      );
     }
+
     renderItemsLeft();
   }
 
