@@ -159,6 +159,8 @@ const renderItemsLeft = function () {
   itemsLeft.textContent = `${itemsCount} ${itemsCount > 1 || itemsCount === 0 ? "items left" : "item left"}`;
 };
 
+const animateBystanderElements = function (element) {};
+
 // Mark a checkbox (complete todo)
 todoList.addEventListener("change", function (e) {
   // const isChecked = e.target.checked;
@@ -208,27 +210,64 @@ todoList.addEventListener("change", function (e) {
           if (taskEvent.propertyName === "color") {
             todoElement.classList.add("is-collapsing");
 
-            todoElement.addEventListener(
-              "transitionend",
-              (event) => {
-                if (event.propertyName === "grid-template-rows") {
-                  todoElement.remove();
-                }
-              },
-            );
+            todoElement.addEventListener("transitionend", (event) => {
+              if (event.propertyName === "grid-template-rows") {
+                todoElement.remove();
+              }
+            });
           }
         },
         { once: true },
       );
     } else {
-      if (!nextCompleted) {
-        todoList.appendChild(todoElement);
-      } else {
-        const firstUncompletedTodo = todoList.querySelector(
-          ".app__todo:not(.todo-completed)",
-        );
-        todoList.insertBefore(todoElement, firstUncompletedTodo);
-      }
+      taskElement.addEventListener(
+        "transitionend",
+        (event) => {
+          console.log(event.propertyName);
+          if (event.propertyName === "color") {
+            const todoElements = todoList.querySelectorAll(".app__todo");
+
+            const initialElementsPositions = [];
+            todoElements.forEach((el) => {
+              initialElementsPositions.push(el.getBoundingClientRect());
+            });
+
+            if (!nextCompleted) {
+              todoList.appendChild(todoElement);
+            } else {
+              const firstUncompletedTodo = todoList.querySelector(
+                ".app__todo:not(.todo-completed)",
+              );
+              todoList.insertBefore(todoElement, firstUncompletedTodo);
+            }
+
+            const finalElementsPositions = [];
+            todoElements.forEach((el) => {
+              finalElementsPositions.push(el.getBoundingClientRect());
+            });
+
+            // Bystanders
+            for (const [index, el] of todoElements.entries()) {
+              const difference =
+                initialElementsPositions[index].top -
+                finalElementsPositions[index].top;
+              console.log(el);
+              el.style.transitionProperty = "transform";
+              el.style.transitionDuration = "0s";
+              el.style.transform = `translateY(${difference}px)`;
+
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  el.style.transitionProperty = "";
+                  el.style.transitionDuration = "";
+                  el.style.transform = "translateY(0px)";
+                });
+              });
+            }
+          }
+        },
+        { once: true },
+      );
     }
 
     renderItemsLeft();
