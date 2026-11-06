@@ -361,60 +361,32 @@ const clearCompletedButtonElement = document.querySelector(
 );
 
 clearCompletedButtonElement.addEventListener("click", function () {
-  const completedElements = [
-    ...todoList.querySelectorAll(".app__todo.todo-completed"),
-  ];
+  if (todos.some((todo) => todo.completed)) {
+    const completedElements = [
+      ...todoList.querySelectorAll(".app__todo.todo-completed"),
+    ];
 
-  if (completedElements.length === 0) return;
-
-  completedElements.forEach((el) => {
-    el.classList.add("is-collapsing");
-  });
-
-  const lastCompletedEl = completedElements[completedElements.length - 1];
-
-  lastCompletedEl.addEventListener("transitionend", function handler(event) {
-    console.log(event.propertyName);
-    if (event.propertyName === "grid-template-rows") {
-      lastCompletedEl.removeEventListener("transitionend", handler);
-
-      // const initialActiveElements = [
-      //   ...todoList.querySelectorAll(".app__todo:not(.todo-completed)"),
-      // ];
-      // const initialPositions = initialActiveElements.map((el) => {
-      //   return el.getBoundingClientRect();
-      // });
-
+    if (completedElements.length === 0) {
       todos = todos.filter((todo) => !todo.completed);
       renderTodos();
-
-      // const newActiveElements = [
-      //   ...todoList.querySelectorAll(".app__todo:not(.todo-completed)"),
-      // ];
-
-      // const finalPositions = newActiveElements.map((el) => {
-      //   return el.getBoundingClientRect();
-      // });
-
-      // for (const [index, el] of newActiveElements.entries()) {
-      //   const difference =
-      //     initialPositions[index].top - finalPositions[index].top;
-      //   if (!difference) continue;
-
-      //   el.style.transitionProperty = "transform";
-      //   el.style.transitionDuration = "0s";
-      //   el.style.transform = `translateY(${difference}px)`;
-
-      //   requestAnimationFrame(() => {
-      //     requestAnimationFrame(() => {
-      //       el.style.transitionProperty = "";
-      //       el.style.transitionDuration = "";
-      //       el.style.transform = "translateY(0px)";
-      //     });
-      //   });
-      // }
+      return;
     }
-  });
+
+    completedElements.forEach((el) => {
+      el.classList.add("is-collapsing");
+    });
+
+    const lastCompletedEl = completedElements[completedElements.length - 1];
+
+    lastCompletedEl.addEventListener("transitionend", function handler(event) {
+      if (event.propertyName === "grid-template-rows") {
+        lastCompletedEl.removeEventListener("transitionend", handler);
+
+        todos = todos.filter((todo) => !todo.completed);
+        renderTodos();
+      }
+    });
+  }
 });
 
 let filter = "all";
