@@ -317,7 +317,33 @@ appFiltersElement.addEventListener("click", function (e) {
   }
   clickedElement?.classList.add("active-filter");
 
-  renderTodos();
+  if (filter === "all") {
+    renderTodos();
+  } else {
+    const activeElements = [
+      ...todoList.querySelectorAll(
+        filter === "active"
+          ? ".app__todo.todo-completed"
+          : ".app__todo:not(.todo-completed)",
+      ),
+    ];
+
+    if (activeElements.length === 0) {
+      renderTodos();
+      return;
+    }
+
+    activeElements.forEach((el) => el.classList.add("is-collapsing"));
+
+    const lastElement = activeElements[activeElements.length - 1];
+
+    lastElement.addEventListener("transitionend", function handler(event) {
+      if (event.propertyName === "grid-template-rows") {
+        lastElement.removeEventListener("transitionend", handler);
+        renderTodos();
+      }
+    });
+  }
 });
 
 renderTodos();
