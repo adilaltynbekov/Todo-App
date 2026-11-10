@@ -217,9 +217,17 @@ main {
   font-size: 1.125rem;
 }
 
-/* .app__todo-list.is-animating .app__todo {
-  pointer-events: none;
-} */
+.app__todo-list[data-filter="active"] .app__todo.todo-completed {
+  grid-template-rows: minmax(0, 0fr);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.app__todo-list[data-filter="completed"] .app__todo:not(.todo-completed) {
+  grid-template-rows: minmax(0, 0fr);
+  opacity: 0;
+  visibility: hidden;
+}
 
 .app__todo {
   display: grid;
@@ -237,7 +245,6 @@ main {
 .app__todo.is-collapsing {
   grid-template-rows: minmax(0, 0fr);
   opacity: 0;
-  /* visibility: hidden; */
 }
 
 .todo__wrapper {

@@ -44,11 +44,11 @@ const renderTodos = function () {
       // If both are completed
       return a.completedAt - b.completedAt;
     })
-    .filter((todo) => {
-      if (filter === "active") return !todo.completed;
-      if (filter === "completed") return todo.completed;
-      return true;
-    })
+    // .filter((todo) => {
+    //   if (filter === "active") return !todo.completed;
+    //   if (filter === "completed") return todo.completed;
+    //   return true;
+    // })
     .map((todo) => {
       return `
       <li class="app__todo ${todo.completed ? "todo-completed" : ""}" data-id="${todo.id}">
@@ -306,9 +306,10 @@ clearCompletedButtonElement.addEventListener("click", function () {
 appFiltersElement.addEventListener("click", function (e) {
   const clickedElement = e.target.closest(".app__filter-btn");
   if (!clickedElement) return;
-  if (filter === clickedElement?.dataset.filter) return;
+  if (filter === clickedElement.dataset.filter) return;
 
-  filter = clickedElement?.dataset.filter;
+  filter = clickedElement.dataset.filter;
+  todoList.dataset.filter = filter;
 
   const allFilterBtns = document.querySelectorAll(".app__filter-btn");
 
@@ -316,34 +317,6 @@ appFiltersElement.addEventListener("click", function (e) {
     btn.classList.remove("active-filter");
   }
   clickedElement?.classList.add("active-filter");
-
-  if (filter === "all") {
-    renderTodos();
-  } else {
-    const activeElements = [
-      ...todoList.querySelectorAll(
-        filter === "active"
-          ? ".app__todo.todo-completed"
-          : ".app__todo:not(.todo-completed)",
-      ),
-    ];
-
-    if (activeElements.length === 0) {
-      renderTodos();
-      return;
-    }
-
-    activeElements.forEach((el) => el.classList.add("is-collapsing"));
-
-    const lastElement = activeElements[activeElements.length - 1];
-
-    lastElement.addEventListener("transitionend", function handler(event) {
-      if (event.propertyName === "grid-template-rows") {
-        lastElement.removeEventListener("transitionend", handler);
-        renderTodos();
-      }
-    });
-  }
 });
 
 renderTodos();
