@@ -245,6 +245,13 @@ main {
 .app__todo.is-collapsing {
   grid-template-rows: minmax(0, 0fr);
   opacity: 0;
+  visibility: hidden;
+}
+
+.app__todo.is-entering {
+  grid-template-rows: minmax(0, 0fr);
+  opacity: 0;
+  visibility: hidden;
 }
 
 .todo__wrapper {

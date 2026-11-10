@@ -10,6 +10,7 @@ const clearCompletedButtonElement = document.querySelector(
 const appFiltersElement = document.querySelector(".app__filters");
 
 let filter = "all";
+let recentlyAddedId = null;
 
 let todos = [
   { id: crypto.randomUUID(), text: "First todo", completed: false },
@@ -50,8 +51,10 @@ const renderTodos = function () {
     //   return true;
     // })
     .map((todo) => {
+      const isNew = todo.id === recentlyAddedId;
+
       return `
-      <li class="app__todo ${todo.completed ? "todo-completed" : ""}" data-id="${todo.id}">
+      <li class="app__todo ${todo.completed ? "todo-completed" : ""} ${isNew ? "is-entering" : ""}" data-id="${todo.id}">
         <div class="todo__wrapper">
           <label class="todo__label">
             <input type="checkbox" class="todo__input" ${todo.completed ? "checked" : ""}/>
@@ -83,6 +86,20 @@ const renderTodos = function () {
   // 2. Use .join("") to glue the HTML strings together into one single giant HTML string!
   todoList.innerHTML = todoHTMLArray.join("");
 
+  if (recentlyAddedId) {
+    const newItemElement = todoList.querySelector(
+      `[data-id="${recentlyAddedId}"]`,
+    );
+
+    if (newItemElement) {
+      requestAnimationFrame(() => {
+        newItemElement.classList.remove("is-entering");
+      });
+    }
+
+    recentlyAddedId = null;
+  }
+
   // 3. Update the counter footer
   renderItemsLeft();
 };
@@ -112,13 +129,12 @@ todoForm.addEventListener("submit", function (e) {
     completed: false,
   };
 
-  // 2. Push a new object into the array
   todos.push(newTodoObj);
 
-  // 3. Clear input
+  recentlyAddedId = newTodoObj.id;
+
   todoInput.value = "";
 
-  // 4. Trigger the render function to updtae the screen
   renderTodos();
 });
 
@@ -163,8 +179,6 @@ const renderItemsLeft = function () {
 
 // Mark a checkbox (complete todo)
 todoList.addEventListener("change", function (e) {
-  // const isChecked = e.target.checked;
-
   // Selecting an li element that has been changed
   const todoElement = e.target.closest(".app__todo");
 
