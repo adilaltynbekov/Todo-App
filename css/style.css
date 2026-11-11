@@ -217,7 +217,7 @@ main {
   font-size: 1.125rem;
 }
 
-.app__todo-list[data-filter="active"] .app__todo.todo-completed {
+/* .app__todo-list[data-filter="active"] .app__todo.todo-completed {
   grid-template-rows: minmax(0, 0fr);
   opacity: 0;
   visibility: hidden;
@@ -227,7 +227,7 @@ main {
   grid-template-rows: minmax(0, 0fr);
   opacity: 0;
   visibility: hidden;
-}
+} */
 
 .app__todo {
   display: grid;
@@ -235,6 +235,7 @@ main {
 
   opacity: 1;
   visibility: visible;
+  overflow: hidden;
 
   transition:
     grid-template-rows 0.3s ease,
@@ -242,12 +243,15 @@ main {
     transform 0.3s ease;
 }
 
-.app__todo.is-collapsing {
+/* .app__todo.is-collapsing {
   grid-template-rows: minmax(0, 0fr);
   opacity: 0;
   visibility: hidden;
-}
+} */
 
+.app__todo-list[data-filter="active"] .app__todo.todo-completed,
+.app__todo-list[data-filter="completed"] .app__todo:not(.todo-completed),
+.app__todo.is-collapsing,
 .app__todo.is-entering {
   grid-template-rows: minmax(0, 0fr);
   opacity: 0;
