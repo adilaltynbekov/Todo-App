@@ -219,15 +219,16 @@ todoList.addEventListener("change", function (e) {
     ) {
       taskElement.addEventListener(
         "transitionend",
-        (taskEvent) => {
-          if (taskEvent.propertyName === "color") {
-            todoElement.classList.add("is-collapsing");
-
-            todoElement.addEventListener("transitionend", (event) => {
-              if (event.propertyName === "grid-template-rows") {
-                todoElement.remove();
-              }
-            });
+        (event) => {
+          if (event.propertyName === "color") {
+            if (!nextCompleted) {
+              todoList.appendChild(todoElement);
+            } else {
+              const firstUncompletedTodo = todoList.querySelector(
+                ".app__todo:not(.todo-completed)",
+              );
+              todoList.insertBefore(todoElement, firstUncompletedTodo);
+            }
           }
         },
         { once: true },
