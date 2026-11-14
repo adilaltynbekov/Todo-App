@@ -231,13 +231,19 @@ main {
     transform 0.3s ease;
 }
 
-.app__todo-list[data-filter="active"] .app__todo.todo-completed,
-.app__todo-list[data-filter="completed"] .app__todo:not(.todo-completed),
+/* .app__todo-list[data-filter="active"] .app__todo.todo-completed,
+.app__todo-list[data-filter="completed"] .app__todo:not(.todo-completed) {
+  grid-template-rows: minmax(0, 0fr);
+  opacity: 0;
+  pointer-events: none;
+} */
+
+.app__todo.is-hidden-by-filter,
 .app__todo.is-collapsing,
 .app__todo.is-entering {
   grid-template-rows: minmax(0, 0fr);
   opacity: 0;
-  visibility: hidden;
+  pointer-events: none;
 }
 
 .todo__wrapper {
@@ -249,60 +255,6 @@ main {
   overflow: hidden;
   min-height: 0;
 }
-
-/* 1. The Outer Grid Shell (Controls the Layout Space) */
-/* .app__todo {
-  display: grid;
-  grid-template-rows: minmax(0, 1fr);
-  overflow: hidden;
-  opacity: 1;
-  border-bottom: 1px solid var(--border-item);
-  Smoothly animate the grid track expansion
-  transition:
-    grid-template-rows 0.3s ease,
-    opacity 0.3s ease,
-    transform 0.3s ease;
-}
-
-2. The Inner Wrapper (Controls the Visual Motion)
-.todo__wrapper {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 1.25rem;
-
-  Starting position for animation
-  transform: translateY(0);
-  opacity: 1;
-
-  Smoothly animate the slide and fade
-  transition:
-    transform 0.3s ease,
-    opacity 0.3s ease;
-}
-
-3. The Collapsed / Entering State
-.app__todo.is-collapsing,
-.app__todo.is-entering,
-.app__todo-list[data-filter="active"] .app__todo.todo-completed,
-.app__todo-list[data-filter="completed"] .app__todo:not(.todo-completed) {
-  Squash the row height to absolute zero so neighbors close the gap
-  grid-template-rows: minmax(0, 0fr);
-  opacity: 0;
-  border-bottom: 0;
-}
-
-Slide and fade the inner content up/down inside the collapsing row
-.app__todo.is-collapsing .todo__wrapper,
-.app__todo.is-entering .todo__wrapper,
-.app__todo-list[data-filter="active"] .app__todo.todo-completed .todo__wrapper,
-.app__todo-list[data-filter="completed"]
-  .app__todo:not(.todo-completed)
-  .todo__wrapper {
-  Slides it up as it collapses
-  transform: translateY(-15px);
-  opacity: 0;
-} */
 
 /* Checked gradient background on custom checkbox */
 .todo-completed .todo__checkbox-custom::before {
@@ -331,10 +283,6 @@ Slide and fade the inner content up/down inside the collapsing row
 
 .todo__label {
   cursor: pointer;
-  /* display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.25rem; */
 }
 
 .todo__input {
@@ -444,13 +392,11 @@ Slide and fade the inner content up/down inside the collapsing row
   transition: transform 0.3s ease;
 }
 
-.app__todo:has(.todo__input:checked) .todo__task,
-.app__todo.is-collpasing .todo__task {
+.app__todo.todo-completed .todo__task {
   color: var(--text-muted);
 }
 
-.app__todo:has(.todo__input:checked) .todo__task::after,
-.app__todo.is-collapsing .todo__task::after {
+.app__todo.todo-completed .todo__task::after {
   transform: scaleX(1);
 }
 

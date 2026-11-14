@@ -209,18 +209,27 @@ todoList.addEventListener("change", function (e) {
       todos = todos.map((t) => (t.id === todoId ? updatedTodo : t));
     }
 
-    todoElement.classList.toggle("todo-completed");
-
     const taskElement = todoElement.querySelector(".todo__task");
 
     if (
       (filter === "active" && nextCompleted) ||
       (filter === "completed" && !nextCompleted)
     ) {
-      taskElement.addEventListener(
-        "transitionend",
-        (event) => {
-          if (event.propertyName === "color") {
+      todoElement.classList.toggle("todo-completed");
+
+      // taskElement.addEventListener(
+      //   "transitionend",
+      //   function taskHandler(taskEvent) {
+      //     console.log(taskEvent);
+      //     if (taskEvent.propertyName === "color") {
+      //       taskElement.removeEventListener("transitionend", taskHandler);
+
+      setTimeout(() => {
+        todoElement.classList.add("is-hidden-by-filter");
+
+        todoElement.addEventListener("transitionend", function handler(event) {
+          if (event.propertyName === "grid-template-rows") {
+            todoElement.removeEventListener("transitionend", handler);
             if (!nextCompleted) {
               todoList.appendChild(todoElement);
             } else {
@@ -230,10 +239,14 @@ todoList.addEventListener("change", function (e) {
               todoList.insertBefore(todoElement, firstUncompletedTodo);
             }
           }
-        },
-        { once: true },
-      );
+        });
+      }, 300);
+      //     }
+      //   },
+      // );
     } else {
+      todoElement.classList.toggle("todo-completed");
+
       taskElement.addEventListener(
         "transitionend",
         (event) => {
@@ -323,15 +336,32 @@ appFiltersElement.addEventListener("click", function (e) {
   if (!clickedElement) return;
   if (filter === clickedElement.dataset.filter) return;
 
-  filter = clickedElement.dataset.filter;
-  todoList.dataset.filter = filter;
-
   const allFilterBtns = document.querySelectorAll(".app__filter-btn");
 
   for (const btn of allFilterBtns) {
     btn.classList.remove("active-filter");
   }
   clickedElement?.classList.add("active-filter");
+
+  filter = clickedElement.dataset.filter;
+  todoList.dataset.filter = filter;
+
+  const allTodos = todoList.querySelectorAll(".app__todo");
+
+  allTodos.forEach((todoElement) => {
+    const isCompleted = todoElement.classList.contains("todo-completed");
+    console.log(isCompleted);
+
+    const shouldBeHidden =
+      (filter === "active" && isCompleted) ||
+      (filter === "completed" && !isCompleted);
+
+    if (shouldBeHidden) {
+      todoElement.classList.add("is-hidden-by-filter");
+    } else {
+      todoElement.classList.remove("is-hidden-by-filter");
+    }
+  });
 });
 
 renderTodos();
