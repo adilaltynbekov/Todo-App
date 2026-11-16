@@ -54,6 +54,10 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-y: scroll;
+}
+
 /* General settings */
 .container-center {
   max-width: 40rem;
