@@ -10,7 +10,7 @@ const clearCompletedButtonElement = document.querySelector(
 const appFiltersElement = document.querySelector(".app__filters");
 
 let filter = "all";
-let recentlyAddedId = null;
+// let recentlyAddedId = null;
 
 let todos = [
   { id: crypto.randomUUID(), text: "First todo", completed: false },
@@ -45,16 +45,11 @@ const renderTodos = function () {
       // If both are completed
       return a.completedAt - b.completedAt;
     })
-    // .filter((todo) => {
-    //   if (filter === "active") return !todo.completed;
-    //   if (filter === "completed") return todo.completed;
-    //   return true;
-    // })
     .map((todo) => {
-      const isNew = todo.id === recentlyAddedId;
+      // const isNew = todo.id === recentlyAddedId;
 
       return `
-      <li class="app__todo ${todo.completed ? "todo-completed" : ""} ${isNew ? "is-entering" : ""}" data-id="${todo.id}">
+      <li class="app__todo ${todo.completed ? "todo-completed" : ""}" data-id="${todo.id}">
         <div class="todo__wrapper">
           <label class="todo__label">
             <input type="checkbox" class="todo__input" ${todo.completed ? "checked" : ""}/>
@@ -83,22 +78,10 @@ const renderTodos = function () {
         </div>
       </li>`;
     });
+
+  console.log(todoHTMLArray);
   // 2. Use .join("") to glue the HTML strings together into one single giant HTML string!
   todoList.innerHTML = todoHTMLArray.join("");
-
-  if (recentlyAddedId) {
-    const newItemElement = todoList.querySelector(
-      `[data-id="${recentlyAddedId}"]`,
-    );
-
-    if (newItemElement) {
-      requestAnimationFrame(() => {
-        newItemElement.classList.remove("is-entering");
-      });
-    }
-
-    recentlyAddedId = null;
-  }
 
   // 3. Update the counter footer
   renderItemsLeft();
@@ -131,11 +114,46 @@ todoForm.addEventListener("submit", function (e) {
 
   todos.push(newTodoObj);
 
-  recentlyAddedId = newTodoObj.id;
-
   todoInput.value = "";
 
-  renderTodos();
+  const newTodoHTML = `<li class="app__todo ${newTodoObj.completed ? "todo-completed" : ""} ${filter === "completed" ? "is-hidden-by-filter" : "is-entering"}" data-id="${newTodoObj.id}">
+                        <div class="todo__wrapper">
+                          <label class="todo__label">
+                            <input type="checkbox" class="todo__input" ${newTodoObj.completed ? "checked" : ""}/>
+                            <span class="todo__checkbox-custom">
+                              <img
+                                src="./images/icon-check.svg"
+                                alt=""
+                                class="todo__check-icon"
+                              />
+                            </span>
+                          </label>
+                          <span class="todo__task"
+                            >${newTodoObj.text}</span
+                          >
+                          <button
+                            class="todo__btn--remove"
+                            type="button"
+                            aria-label="Remove task"
+                          >
+                            <img
+                              class="todo__icon--cross"
+                              src="./images/icon-cross.svg"
+                              alt=""
+                            />
+                          </button>
+                        </div>
+                      </li>`;
+
+  todoList.insertAdjacentHTML("beforeend", newTodoHTML);
+
+  const newAddedElement = todoList.querySelector(
+    `[data-id="${newTodoObj.id}"]`,
+  );
+
+  requestAnimationFrame(() => {
+    newAddedElement.classList.remove("is-entering");
+  });
 });
 
 // Remove a todo element
@@ -217,13 +235,6 @@ todoList.addEventListener("change", function (e) {
     ) {
       todoElement.classList.toggle("todo-completed");
 
-      // taskElement.addEventListener(
-      //   "transitionend",
-      //   function taskHandler(taskEvent) {
-      //     console.log(taskEvent);
-      //     if (taskEvent.propertyName === "color") {
-      //       taskElement.removeEventListener("transitionend", taskHandler);
-
       setTimeout(() => {
         todoElement.classList.add("is-hidden-by-filter");
 
@@ -241,9 +252,6 @@ todoList.addEventListener("change", function (e) {
           }
         });
       }, 300);
-      //     }
-      //   },
-      // );
     } else {
       todoElement.classList.toggle("todo-completed");
 
