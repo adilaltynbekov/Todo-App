@@ -10,24 +10,30 @@ const clearCompletedButtonElement = document.querySelector(
 const appFiltersElement = document.querySelector(".app__filters");
 
 let filter = "all";
-// let recentlyAddedId = null;
 
-let todos = [
-  { id: crypto.randomUUID(), text: "First todo", completed: false },
-  {
-    id: crypto.randomUUID(),
-    text: "Second todo",
-    completed: true,
-    completedAt: Date.now(),
-  },
-  {
-    id: crypto.randomUUID(),
-    text: "Third todo",
-    completed: true,
-    completedAt: Date.now(),
-  },
-  { id: crypto.randomUUID(), text: "Forth todo", completed: false },
-];
+// let todos = [
+//   { id: crypto.randomUUID(), text: "First todo", completed: false },
+//   {
+//     id: crypto.randomUUID(),
+//     text: "Second todo",
+//     completed: true,
+//     completedAt: Date.now(),
+//   },
+//   {
+//     id: crypto.randomUUID(),
+//     text: "Third todo",
+//     completed: true,
+//     completedAt: Date.now(),
+//   },
+//   { id: crypto.randomUUID(), text: "Forth todo", completed: false },
+// ];
+
+let todos = JSON.parse(localStorage.getItem("todos")) || [];
+
+// Save todos to local storage function
+const saveTodos = function() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
 
 const renderTodos = function () {
   // 1. Take the array of objects and map every object into an HTML string
@@ -79,7 +85,6 @@ const renderTodos = function () {
       </li>`;
     });
 
-  console.log(todoHTMLArray);
   // 2. Use .join("") to glue the HTML strings together into one single giant HTML string!
   todoList.innerHTML = todoHTMLArray.join("");
 
@@ -113,6 +118,8 @@ todoForm.addEventListener("submit", function (e) {
   };
 
   todos.push(newTodoObj);
+
+  saveTodos();
 
   todoInput.value = "";
 
@@ -173,6 +180,9 @@ const removeItem = function (item) {
   item.classList.add("is-collapsing");
   // 2. Remove the item from the array using .filter()
   todos = todos.filter((todo) => todo.id !== todoId);
+
+  saveTodos();
+  
   renderItemsLeft();
 
   const handleTransitionEnd = (event) => {
@@ -226,6 +236,8 @@ todoList.addEventListener("change", function (e) {
       // Marking: Standart ummutable update (letting .sort() handle where it goes)
       todos = todos.map((t) => (t.id === todoId ? updatedTodo : t));
     }
+
+    saveTodos();
 
     const taskElement = todoElement.querySelector(".todo__task");
 
@@ -315,15 +327,13 @@ clearCompletedButtonElement.addEventListener("click", function () {
       ...todoList.querySelectorAll(".app__todo.todo-completed"),
     ];
 
-    if (completedElements.length === 0) {
-      todos = todos.filter((todo) => !todo.completed);
-      renderTodos();
-      return;
-    }
-
     completedElements.forEach((el) => {
       el.classList.add("is-collapsing");
     });
+
+    todos = todos.filter((todo) => !todo.completed);
+
+    saveTodos();
 
     const lastCompletedEl = completedElements[completedElements.length - 1];
 
@@ -331,10 +341,12 @@ clearCompletedButtonElement.addEventListener("click", function () {
       if (event.propertyName === "grid-template-rows") {
         lastCompletedEl.removeEventListener("transitionend", handler);
 
-        todos = todos.filter((todo) => !todo.completed);
-        renderTodos();
+        completedElements.forEach((todo) => {
+          todo.remove();
+        })
       }
     });
+
   }
 });
 
