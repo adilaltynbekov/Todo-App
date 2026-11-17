@@ -119,6 +119,8 @@ todoForm.addEventListener("submit", function (e) {
 
   todos.push(newTodoObj);
 
+  renderItemsLeft();
+
   saveTodos();
 
   todoInput.value = "";
