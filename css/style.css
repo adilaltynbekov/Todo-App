@@ -235,13 +235,6 @@ main {
     transform 0.3s ease;
 }
 
-/* .app__todo-list[data-filter="active"] .app__todo.todo-completed,
-.app__todo-list[data-filter="completed"] .app__todo:not(.todo-completed) {
-  grid-template-rows: minmax(0, 0fr);
-  opacity: 0;
-  pointer-events: none;
-} */
-
 .app__todo.is-hidden-by-filter,
 .app__todo.is-collapsing,
 .app__todo.is-entering {
@@ -342,10 +335,15 @@ main {
 }
 
 /* Hover: Reveal gradient border ring */
-.app__todo:not(.todo-completed):not(:has(.todo__input:checked)):hover
+.app__todo:not(.todo-completed):not(:has(.todo__input:checked)).is-hovered
   .todo__checkbox-custom::after {
   opacity: 1;
 }
+
+/* .app__todo:not(.todo-completed):not(:has(.todo__input:checked)):hover
+  .todo__checkbox-custom::after {
+  opacity: 1;
+} */
 
 /* Checked: Reveal full solid gradient circle */
 .todo__input:checked + .todo__checkbox-custom::before {
@@ -417,10 +415,15 @@ main {
   flex-shrink: 0;
 }
 
-.app__todo:hover .todo__btn--remove {
+.app__todo.is-hovered .todo__btn--remove {
   opacity: 1;
   pointer-events: auto;
 }
+
+/* .app__todo:hover .todo__btn--remove {
+  opacity: 1;
+  pointer-events: auto;
+} */
 
 .todo__icon--cross {
   max-width: 100%;
