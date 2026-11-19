@@ -335,14 +335,24 @@ main {
 }
 
 /* Hover: Reveal gradient border ring */
-.app__todo:not(.todo-completed):not(:has(.todo__input:checked)).is-hovered
+.app__todo:not(.todo-completed):not(:has(.todo__input:checked)).force-hover
   .todo__checkbox-custom::after {
   opacity: 1;
+}
+
+.app__todo.force-hover .todo__btn--remove {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* .app__todo:not(.todo-completed):not(:has(.todo__input:checked)):hover
   .todo__checkbox-custom::after {
   opacity: 1;
+}
+
+.app__todo:hover .todo__btn--remove {
+  opacity: 1;
+  pointer-events: auto;
 } */
 
 /* Checked: Reveal full solid gradient circle */
@@ -414,16 +424,6 @@ main {
   margin-left: auto;
   flex-shrink: 0;
 }
-
-.app__todo.is-hovered .todo__btn--remove {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* .app__todo:hover .todo__btn--remove {
-  opacity: 1;
-  pointer-events: auto;
-} */
 
 .todo__icon--cross {
   max-width: 100%;

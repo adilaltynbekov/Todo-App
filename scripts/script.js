@@ -36,26 +36,13 @@ const saveTodos = function () {
 };
 
 // Function to attach hover tracking to any todo element
-// const attachHoverListeners = function (todoElement) {
-//   console.log("exectued")
-//   todoElement.addEventListener("mouseenter", () => {
-//     todoElement.classList.add("is-hovered");
-//   });
-
-//   todoElement.addEventListener("mouseleave", () => {
-//     todoElement.classList.remove("is-hovered");
-//   });
-// };
-
 const attachHoverListeners = function (todoElement) {
   todoElement.addEventListener("mouseenter", () => {
-    console.log("Mouse entered todo!"); // <--- Put it here
-    todoElement.classList.add("is-hovered");
+    todoElement.classList.add("force-hover");
   });
 
   todoElement.addEventListener("mouseleave", () => {
-    console.log("Mouse left todo!"); // <--- And optionally here
-    todoElement.classList.remove("is-hovered");
+    todoElement.classList.remove("force-hover");
   });
 };
 
@@ -109,6 +96,9 @@ const renderTodos = function () {
 
   // 2. Use .join("") to glue the HTML strings together into one single giant HTML string!
   todoList.innerHTML = todoHTMLArray.join("");
+  todoList.querySelectorAll(".app__todo").forEach((todoElement) => {
+    attachHoverListeners(todoElement);
+  });
 
   // 3. Update the counter footer
   renderItemsLeft();
@@ -230,6 +220,45 @@ const renderItemsLeft = function () {
   itemsLeft.textContent = `${itemsCount} ${itemsCount > 1 || itemsCount === 0 ? "items left" : "item left"}`;
 };
 
+// let mouseX = 0;
+// let mouseY = 0;
+
+// document.addEventListener("mousemove", (e) => {
+//   mouseX = e.clientX;
+//   mouseY = e.clientY;
+// });
+
+let lastMouseX = null;
+let lastMouseY = null;
+
+document.addEventListener(
+  "pointermove",
+  (e) => {
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+  },
+  { passive: true },
+);
+
+const syncForceHoverToCursor = function () {
+  const allTodos = todoList.querySelectorAll(".app__todo");
+  allTodos.forEach((el) => el.classList.remove("force-hover"));
+
+  console.log("Cursor coords:", lastMouseX, lastMouseY);
+  if (lastMouseX === null || lastMouseY === null) return;
+
+  const elementUnderCursor = document
+    .elementsFromPoint(lastMouseX, lastMouseY)
+    .map((el) => el.closest(".app__todo"))
+    .find((el) => el && todoList.contains(el));
+
+  console.log("Todo under cursor:", elementUnderCursor?.dataset?.id || null);
+
+  if (elementUnderCursor) {
+    elementUnderCursor.classList.add("force-hover");
+  }
+};
+
 // Mark a checkbox (complete todo)
 todoList.addEventListener("change", function (e) {
   // Selecting an li element that has been changed
@@ -238,7 +267,7 @@ todoList.addEventListener("change", function (e) {
   // Checking if it exists
   if (!todoElement) return;
 
-  // Selecting an id of of a changed element
+  // Selecting an id of a changed element
   const todoId = todoElement.dataset.id;
 
   const targetTodo = todos.find((t) => t.id === todoId);
@@ -266,12 +295,12 @@ todoList.addEventListener("change", function (e) {
 
     const taskElement = todoElement.querySelector(".todo__task");
 
+    todoElement.classList.toggle("todo-completed");
+
     if (
       (filter === "active" && nextCompleted) ||
       (filter === "completed" && !nextCompleted)
     ) {
-      todoElement.classList.toggle("todo-completed");
-
       setTimeout(() => {
         todoElement.classList.add("is-hidden-by-filter");
 
@@ -292,12 +321,12 @@ todoList.addEventListener("change", function (e) {
         });
       }, 300);
     } else {
-      todoElement.classList.toggle("todo-completed");
-
       taskElement.addEventListener(
         "transitionend",
         (event) => {
           if (event.propertyName === "color") {
+            // todoElement.classList.add("force-hover");
+
             const todoElements = todoList.querySelectorAll(".app__todo");
 
             const initialElementsPositions = [];
@@ -316,17 +345,37 @@ todoList.addEventListener("change", function (e) {
               // todoList.insertBefore(todoElement, firstUncompletedTodo);
             }
 
-            // attachHoverListeners(todoElement);
+            // const rect = todoElement.getBoundingClientRect();
+            // const isMouseStillOver =
+            //   mouseX >= rect.left &&
+            //   mouseX <= rect.right &&
+            //   mouseY >= rect.top &&
+            //   mouseY <= rect.bottom;
 
-            todoElement.classList.remove("is-hovered");
+            // if (isMouseStillOver) {
+            //   todoElement.classList.add("force-hover");
+            // }
 
             const finalElementsPositions = [];
             todoElements.forEach((el) => {
               finalElementsPositions.push(el.getBoundingClientRect());
             });
 
-            // Bystanders
+            // Flip
             for (const [index, el] of todoElements.entries()) {
+              // if (todoId === el.dataset.id) {
+              //   const currentElDiff =
+              //     initialElementsPositions[index].top -
+              //     finalElementsPositions[index].top;
+              //   console.log(currentElDiff);
+              //   if (currentElDiff) {
+              //     console.log("it's not zero");
+              //     // setTimeout(() => {
+              //       todoElement.classList.remove("force-hover");
+              //     // }, 1000);
+              //   }
+              // }
+
               const difference =
                 initialElementsPositions[index].top -
                 finalElementsPositions[index].top;
@@ -343,6 +392,10 @@ todoList.addEventListener("change", function (e) {
                 });
               });
             }
+
+            setTimeout(() => {
+              syncForceHoverToCursor();
+            }, 200);
           }
         },
         { once: true },
@@ -352,6 +405,13 @@ todoList.addEventListener("change", function (e) {
     renderItemsLeft();
   }
 });
+
+// todoList.addEventListener("mouseout", (e) => {
+//   const todoElement = e.target.closest(".app__todo");
+//   if(todoElement && !todoElement.contains(e.relatedTarget)) {
+//     todoElement.classList.remove("force-hover");
+//   }
+// });
 
 // Clear completed
 clearCompletedButtonElement.addEventListener("click", function () {
