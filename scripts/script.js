@@ -395,7 +395,7 @@ todoList.addEventListener("change", function (e) {
 
             setTimeout(() => {
               syncForceHoverToCursor();
-            }, 200);
+            }, 300);
           }
         },
         { once: true },
