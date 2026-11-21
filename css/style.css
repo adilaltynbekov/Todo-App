@@ -61,6 +61,7 @@ html {
 /* General settings */
 .container-center {
   max-width: 40rem;
+  padding-inline: 1.25rem;
   margin: 0 auto;
 }
 
