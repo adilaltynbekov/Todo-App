@@ -70,7 +70,14 @@ body,
 .footer__wrapper,
 .app__todo-controls,
 .app__filter-btn,
-.app__clear-completed-btn {
+.app__clear-completed-btn,
+.app__clear-completed-btn-container,
+.app__todo-list,
+.app__todo,
+.todo__wrapper,
+.app__todo-form,
+.app__items-left,
+.app__filters {
   transition:
     background-color 0.3s ease,
     color 0.3s ease,
@@ -211,12 +218,13 @@ main {
 
 /* TODO */
 .app__todo-stack-wrapper {
-  background-color: var(--bg-app);
+  /* background-color: var(--bg-app); */
   border-radius: 4px;
   box-shadow: var(--shadow-stack);
 }
 
 .app__todo-list {
+  background-color: var(--bg-app);
   list-style: none;
   color: var(--text-main);
   font-size: 1.125rem;
@@ -433,25 +441,47 @@ main {
 
 /* CONTROLS */
 .app__todo-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-areas: "count filters clear";
   padding: 1.25rem;
+  background-color: var(--bg-app);
   color: var(--text-secondary);
   font-size: 1rem;
 }
 
 .app__items-left {
+  grid-area: count;
+  /* background-color: var(--bg-app); */
   min-width: 9.5ch;
+  color: inherit;
 }
 
 .app__filters {
   display: flex;
+  justify-content: center;
+  /* background-color: var(--bg-app); */
   gap: 1.25rem;
+  grid-area: filters;
 }
 
-.app__filter-btn,
+.app__clear-completed-btn-container {
+  display: flex;
+  justify-content: end;
+  background-color: var(--bg-app);
+  grid-area: clear;
+}
+
 .app__clear-completed-btn {
+  background-color: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.app__filter-btn {
+  font-weight: 700;
   background-color: transparent;
   border: none;
   color: var(--text-secondary);
@@ -462,10 +492,6 @@ main {
 
 .active-filter {
   color: var(--clr-accent);
-}
-
-.app__filter-btn {
-  font-weight: 700;
 }
 
 .app__filter-btn:not(.active-filter):hover,
