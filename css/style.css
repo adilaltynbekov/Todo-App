@@ -221,6 +221,7 @@ main {
   /* background-color: var(--bg-app); */
   border-radius: 4px;
   box-shadow: var(--shadow-stack);
+  overflow: hidden;
 }
 
 .app__todo-list {
@@ -410,7 +411,7 @@ main {
 
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 .app__todo.todo-completed .todo__task {
