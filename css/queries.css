@@ -34,4 +34,9 @@
     border-bottom-right-radius: 4px;
     padding: 1.25rem;
   }
+
+  .todo__btn--remove {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
