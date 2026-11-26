@@ -11,39 +11,11 @@ const appFiltersElement = document.querySelector(".app__filters");
 
 let filter = "all";
 
-// let todos = [
-//   { id: crypto.randomUUID(), text: "First todo", completed: false },
-//   {
-//     id: crypto.randomUUID(),
-//     text: "Second todo",
-//     completed: true,
-//     completedAt: Date.now(),
-//   },
-//   {
-//     id: crypto.randomUUID(),
-//     text: "Third todo",
-//     completed: true,
-//     completedAt: Date.now(),
-//   },
-//   { id: crypto.randomUUID(), text: "Forth todo", completed: false },
-// ];
-
 let todos = JSON.parse(localStorage.getItem("todos")) || [];
 
 // Save todos to local storage function
 const saveTodos = function () {
   localStorage.setItem("todos", JSON.stringify(todos));
-};
-
-// Function to attach hover tracking to any todo element
-const attachHoverListeners = function (todoElement) {
-  todoElement.addEventListener("mouseenter", () => {
-    todoElement.classList.add("force-hover");
-  });
-
-  todoElement.addEventListener("mouseleave", () => {
-    todoElement.classList.remove("force-hover");
-  });
 };
 
 const renderTodos = function () {
@@ -96,9 +68,6 @@ const renderTodos = function () {
 
   // 2. Use .join("") to glue the HTML strings together into one single giant HTML string!
   todoList.innerHTML = todoHTMLArray.join("");
-  todoList.querySelectorAll(".app__todo").forEach((todoElement) => {
-    attachHoverListeners(todoElement);
-  });
 
   // 3. Update the counter footer
   renderItemsLeft();
@@ -174,7 +143,6 @@ todoForm.addEventListener("submit", function (e) {
 
   requestAnimationFrame(() => {
     newAddedElement.classList.remove("is-entering");
-    attachHoverListeners(newAddedElement);
   });
 });
 
@@ -218,45 +186,6 @@ const renderItemsLeft = function () {
   const itemsCount = incompletedTodos.length;
 
   itemsLeft.textContent = `${itemsCount} ${itemsCount > 1 || itemsCount === 0 ? "items left" : "item left"}`;
-};
-
-// let mouseX = 0;
-// let mouseY = 0;
-
-// document.addEventListener("mousemove", (e) => {
-//   mouseX = e.clientX;
-//   mouseY = e.clientY;
-// });
-
-let lastMouseX = null;
-let lastMouseY = null;
-
-document.addEventListener(
-  "pointermove",
-  (e) => {
-    lastMouseX = e.clientX;
-    lastMouseY = e.clientY;
-  },
-  { passive: true },
-);
-
-const syncForceHoverToCursor = function () {
-  const allTodos = todoList.querySelectorAll(".app__todo");
-  allTodos.forEach((el) => el.classList.remove("force-hover"));
-
-  console.log("Cursor coords:", lastMouseX, lastMouseY);
-  if (lastMouseX === null || lastMouseY === null) return;
-
-  const elementUnderCursor = document
-    .elementsFromPoint(lastMouseX, lastMouseY)
-    .map((el) => el.closest(".app__todo"))
-    .find((el) => el && todoList.contains(el));
-
-  console.log("Todo under cursor:", elementUnderCursor?.dataset?.id || null);
-
-  if (elementUnderCursor) {
-    elementUnderCursor.classList.add("force-hover");
-  }
 };
 
 // Mark a checkbox (complete todo)
@@ -308,14 +237,14 @@ todoList.addEventListener("change", function (e) {
           if (event.propertyName === "grid-template-rows") {
             todoElement.removeEventListener("transitionend", handler);
             if (!nextCompleted) {
-              todoList.moveBefore(todoElement, null);
-              // todoList.appendChild(todoElement);
+              // todoList.moveBefore(todoElement, null);
+              todoList.appendChild(todoElement);
             } else {
               const firstUncompletedTodo = todoList.querySelector(
                 ".app__todo:not(.todo-completed)",
               );
-              todoList.moveBefore(todoElement, firstUncompletedTodo);
-              // todoList.insertBefore(todoElement, firstUncompletedTodo);
+              // todoList.moveBefore(todoElement, firstUncompletedTodo);
+              todoList.insertBefore(todoElement, firstUncompletedTodo);
             }
           }
         });
@@ -335,26 +264,15 @@ todoList.addEventListener("change", function (e) {
             });
 
             if (!nextCompleted) {
-              todoList.moveBefore(todoElement, null);
-              // todoList.appendChild(todoElement);
+              // todoList.moveBefore(todoElement, null);
+              todoList.appendChild(todoElement);
             } else {
               const firstUncompletedTodo = todoList.querySelector(
                 ".app__todo:not(.todo-completed)",
               );
-              todoList.moveBefore(todoElement, firstUncompletedTodo);
-              // todoList.insertBefore(todoElement, firstUncompletedTodo);
+              // todoList.moveBefore(todoElement, firstUncompletedTodo);
+              todoList.insertBefore(todoElement, firstUncompletedTodo);
             }
-
-            // const rect = todoElement.getBoundingClientRect();
-            // const isMouseStillOver =
-            //   mouseX >= rect.left &&
-            //   mouseX <= rect.right &&
-            //   mouseY >= rect.top &&
-            //   mouseY <= rect.bottom;
-
-            // if (isMouseStillOver) {
-            //   todoElement.classList.add("force-hover");
-            // }
 
             const finalElementsPositions = [];
             todoElements.forEach((el) => {
@@ -363,19 +281,6 @@ todoList.addEventListener("change", function (e) {
 
             // Flip
             for (const [index, el] of todoElements.entries()) {
-              // if (todoId === el.dataset.id) {
-              //   const currentElDiff =
-              //     initialElementsPositions[index].top -
-              //     finalElementsPositions[index].top;
-              //   console.log(currentElDiff);
-              //   if (currentElDiff) {
-              //     console.log("it's not zero");
-              //     // setTimeout(() => {
-              //       todoElement.classList.remove("force-hover");
-              //     // }, 1000);
-              //   }
-              // }
-
               const difference =
                 initialElementsPositions[index].top -
                 finalElementsPositions[index].top;
@@ -392,10 +297,6 @@ todoList.addEventListener("change", function (e) {
                 });
               });
             }
-
-            setTimeout(() => {
-              syncForceHoverToCursor();
-            }, 300);
           }
         },
         { once: true },
@@ -405,13 +306,6 @@ todoList.addEventListener("change", function (e) {
     renderItemsLeft();
   }
 });
-
-// todoList.addEventListener("mouseout", (e) => {
-//   const todoElement = e.target.closest(".app__todo");
-//   if(todoElement && !todoElement.contains(e.relatedTarget)) {
-//     todoElement.classList.remove("force-hover");
-//   }
-// });
 
 // Clear completed
 clearCompletedButtonElement.addEventListener("click", function () {

@@ -345,7 +345,7 @@ main {
 }
 
 /* Hover: Reveal gradient border ring */
-.app__todo:not(.todo-completed):not(:has(.todo__input:checked)).force-hover
+/* .app__todo:not(.todo-completed):not(:has(.todo__input:checked)).force-hover
   .todo__checkbox-custom::after {
   opacity: 1;
 }
@@ -353,9 +353,9 @@ main {
 .app__todo.force-hover .todo__btn--remove {
   opacity: 1;
   pointer-events: auto;
-}
+} */
 
-/* .app__todo:not(.todo-completed):not(:has(.todo__input:checked)):hover
+.app__todo:not(.todo-completed):not(:has(.todo__input:checked)):hover
   .todo__checkbox-custom::after {
   opacity: 1;
 }
@@ -363,7 +363,7 @@ main {
 .app__todo:hover .todo__btn--remove {
   opacity: 1;
   pointer-events: auto;
-} */
+}
 
 /* Checked: Reveal full solid gradient circle */
 .todo__input:checked + .todo__checkbox-custom::before {
